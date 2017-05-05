@@ -1,0 +1,133 @@
+<Project ModBy="Analyzer" Name="C:/Users/Nebi/OneDrive/Documents/Lattice/midi_synth/reveal.rvs" Date="2017-03-12">
+ <Core Name="top_midi_synth_LA0">
+  <Setting>
+   <Capture SamplesPerTrig="256" NumTrigsCap="1"/>
+   <Event EventCnt="0" CntEnableRun="0"/>
+   <TrigSetting PreTrgSamples="" AND_ALL="0" PostTrgSamples="" TURadix="0"/>
+  </Setting>
+  <Dataset Name="Base">
+   <Trace>
+    <Bus Name="midi_synth/midi_controller/dds_frequency_bus" Radix="0">
+     <Sig Name="midi_synth/midi_controller/dds_frequency_bus:0"/>
+     <Sig Name="midi_synth/midi_controller/dds_frequency_bus:1"/>
+     <Sig Name="midi_synth/midi_controller/dds_frequency_bus:2"/>
+     <Sig Name="midi_synth/midi_controller/dds_frequency_bus:3"/>
+     <Sig Name="midi_synth/midi_controller/dds_frequency_bus:4"/>
+     <Sig Name="midi_synth/midi_controller/dds_frequency_bus:5"/>
+     <Sig Name="midi_synth/midi_controller/dds_frequency_bus:6"/>
+     <Sig Name="midi_synth/midi_controller/dds_frequency_bus:7"/>
+     <Sig Name="midi_synth/midi_controller/dds_frequency_bus:8"/>
+     <Sig Name="midi_synth/midi_controller/dds_frequency_bus:9"/>
+     <Sig Name="midi_synth/midi_controller/dds_frequency_bus:10"/>
+     <Sig Name="midi_synth/midi_controller/dds_frequency_bus:11"/>
+     <Sig Name="midi_synth/midi_controller/dds_frequency_bus:12"/>
+     <Sig Name="midi_synth/midi_controller/dds_frequency_bus:13"/>
+     <Sig Name="midi_synth/midi_controller/dds_frequency_bus:14"/>
+     <Sig Name="midi_synth/midi_controller/dds_frequency_bus:15"/>
+     <Sig Name="midi_synth/midi_controller/dds_frequency_bus:16"/>
+     <Sig Name="midi_synth/midi_controller/dds_frequency_bus:17"/>
+     <Sig Name="midi_synth/midi_controller/dds_frequency_bus:18"/>
+     <Sig Name="midi_synth/midi_controller/dds_frequency_bus:19"/>
+     <Sig Name="midi_synth/midi_controller/dds_frequency_bus:20"/>
+     <Sig Name="midi_synth/midi_controller/dds_frequency_bus:21"/>
+     <Sig Name="midi_synth/midi_controller/dds_frequency_bus:22"/>
+     <Sig Name="midi_synth/midi_controller/dds_frequency_bus:23"/>
+     <Sig Name="midi_synth/midi_controller/dds_frequency_bus:24"/>
+     <Sig Name="midi_synth/midi_controller/dds_frequency_bus:25"/>
+     <Sig Name="midi_synth/midi_controller/dds_frequency_bus:26"/>
+     <Sig Name="midi_synth/midi_controller/dds_frequency_bus:27"/>
+     <Sig Name="midi_synth/midi_controller/dds_frequency_bus:28"/>
+     <Sig Name="midi_synth/midi_controller/dds_frequency_bus:29"/>
+     <Sig Name="midi_synth/midi_controller/dds_frequency_bus:30"/>
+     <Sig Name="midi_synth/midi_controller/dds_frequency_bus:31"/>
+    </Bus>
+    <Bus Name="midi_synth/midi_controller/key_state" Radix="0">
+     <Sig Name="midi_synth/midi_controller/key_state:0"/>
+     <Sig Name="midi_synth/midi_controller/key_state:1"/>
+     <Sig Name="midi_synth/midi_controller/key_state:2"/>
+     <Sig Name="midi_synth/midi_controller/key_state:3"/>
+    </Bus>
+    <Bus Name="midi_synth/midi_controller/midi_byte_converter_input" Radix="0">
+     <Sig Name="midi_synth/midi_controller/midi_byte_converter_input:0"/>
+     <Sig Name="midi_synth/midi_controller/midi_byte_converter_input:1"/>
+     <Sig Name="midi_synth/midi_controller/midi_byte_converter_input:2"/>
+     <Sig Name="midi_synth/midi_controller/midi_byte_converter_input:3"/>
+     <Sig Name="midi_synth/midi_controller/midi_byte_converter_input:4"/>
+     <Sig Name="midi_synth/midi_controller/midi_byte_converter_input:5"/>
+     <Sig Name="midi_synth/midi_controller/midi_byte_converter_input:6"/>
+    </Bus>
+    <Bus Name="midi_synth/midi_controller/note_state" Radix="0">
+     <Sig Name="midi_synth/midi_controller/note_state:0"/>
+     <Sig Name="midi_synth/midi_controller/note_state:1"/>
+    </Bus>
+    <Bus Name="midi_synth/midi_controller/tuning_code" Radix="0">
+     <Sig Name="midi_synth/midi_controller/tuning_code:0"/>
+     <Sig Name="midi_synth/midi_controller/tuning_code:1"/>
+     <Sig Name="midi_synth/midi_controller/tuning_code:2"/>
+     <Sig Name="midi_synth/midi_controller/tuning_code:3"/>
+     <Sig Name="midi_synth/midi_controller/tuning_code:4"/>
+     <Sig Name="midi_synth/midi_controller/tuning_code:5"/>
+     <Sig Name="midi_synth/midi_controller/tuning_code:6"/>
+     <Sig Name="midi_synth/midi_controller/tuning_code:7"/>
+     <Sig Name="midi_synth/midi_controller/tuning_code:8"/>
+     <Sig Name="midi_synth/midi_controller/tuning_code:9"/>
+     <Sig Name="midi_synth/midi_controller/tuning_code:10"/>
+     <Sig Name="midi_synth/midi_controller/tuning_code:11"/>
+     <Sig Name="midi_synth/midi_controller/tuning_code:12"/>
+     <Sig Name="midi_synth/midi_controller/tuning_code:13"/>
+     <Sig Name="midi_synth/midi_controller/tuning_code:14"/>
+     <Sig Name="midi_synth/midi_controller/tuning_code:15"/>
+     <Sig Name="midi_synth/midi_controller/tuning_code:16"/>
+     <Sig Name="midi_synth/midi_controller/tuning_code:17"/>
+     <Sig Name="midi_synth/midi_controller/tuning_code:18"/>
+     <Sig Name="midi_synth/midi_controller/tuning_code:19"/>
+     <Sig Name="midi_synth/midi_controller/tuning_code:20"/>
+     <Sig Name="midi_synth/midi_controller/tuning_code:21"/>
+     <Sig Name="midi_synth/midi_controller/tuning_code:22"/>
+     <Sig Name="midi_synth/midi_controller/tuning_code:23"/>
+     <Sig Name="midi_synth/midi_controller/tuning_code:24"/>
+     <Sig Name="midi_synth/midi_controller/tuning_code:25"/>
+     <Sig Name="midi_synth/midi_controller/tuning_code:26"/>
+     <Sig Name="midi_synth/midi_controller/tuning_code:27"/>
+     <Sig Name="midi_synth/midi_controller/tuning_code:28"/>
+     <Sig Name="midi_synth/midi_controller/tuning_code:29"/>
+     <Sig Name="midi_synth/midi_controller/tuning_code:30"/>
+     <Sig Name="midi_synth/midi_controller/tuning_code:31"/>
+    </Bus>
+    <Bus Name="midi_synth/midi_controller/voice_RAM_addr" Radix="0">
+     <Sig Name="midi_synth/midi_controller/voice_RAM_addr:0"/>
+     <Sig Name="midi_synth/midi_controller/voice_RAM_addr:1"/>
+     <Sig Name="midi_synth/midi_controller/voice_RAM_addr:2"/>
+     <Sig Name="midi_synth/midi_controller/voice_RAM_addr:3"/>
+     <Sig Name="midi_synth/midi_controller/voice_RAM_addr:4"/>
+     <Sig Name="midi_synth/midi_controller/voice_RAM_addr:5"/>
+     <Sig Name="midi_synth/midi_controller/voice_RAM_addr:6"/>
+    </Bus>
+    <Bus Name="midi_synth/midi_controller/voice_RAM_din" Radix="0">
+     <Sig Name="midi_synth/midi_controller/voice_RAM_din:0"/>
+     <Sig Name="midi_synth/midi_controller/voice_RAM_din:1"/>
+     <Sig Name="midi_synth/midi_controller/voice_RAM_din:2"/>
+     <Sig Name="midi_synth/midi_controller/voice_RAM_din:3"/>
+    </Bus>
+    <Bus Name="midi_synth/midi_controller/voice_RAM_dout" Radix="0">
+     <Sig Name="midi_synth/midi_controller/voice_RAM_dout:0"/>
+     <Sig Name="midi_synth/midi_controller/voice_RAM_dout:1"/>
+     <Sig Name="midi_synth/midi_controller/voice_RAM_dout:2"/>
+     <Sig Name="midi_synth/midi_controller/voice_RAM_dout:3"/>
+    </Bus>
+    <Sig Name="midi_synth/midi_controller/voice_RAM_write_en"/>
+    <Bus Name="midi_synth/midi_controller/voice_index" Radix="0">
+     <Sig Name="midi_synth/midi_controller/voice_index:0"/>
+     <Sig Name="midi_synth/midi_controller/voice_index:1"/>
+     <Sig Name="midi_synth/midi_controller/voice_index:2"/>
+     <Sig Name="midi_synth/midi_controller/voice_index:3"/>
+    </Bus>
+    <Sig Name="midi_synth/midi_controller/midi_byte_ready"/>
+   </Trace>
+   <Trigger>
+    <TU Operator="6" Name="TU1" ID="1" Value="1" Radix="0"/>
+    <TE Enable="1" Expression="tu1" Name="TE1" ID="1"/>
+   </Trigger>
+  </Dataset>
+ </Core>
+</Project>

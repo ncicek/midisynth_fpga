@@ -1,0 +1,138 @@
+<Project ModBy="Inserter" SigType="0" Name="C:/Users/Nebi/OneDrive/Documents/Lattice/midi_synth/reveal.rvl" Date="2017-03-12">
+    <IP Version="1_5_062609"/>
+    <Design DesignEntry="Schematic/Verilog HDL" Synthesis="lse" DeviceFamily="MachXO3LF" DesignName="midi_synth"/>
+    <Core InsertDataset="0" Insert="1" Reveal_sig="81327141" Name="top_midi_synth_LA0" ID="0">
+        <Setting>
+            <Clock SampleClk="midi_synth/midi_controller/clk" SampleEnable="0" EnableClk="" EnableClk_Pri="0"/>
+            <TraceBuffer Implementation="0" BitTimeStamp="0" hasTimeStamp="0" IncTrigSig="1" BufferDepth="256"/>
+            <Capture Mode="0" MinSamplesPerTrig="16"/>
+            <Event CntEnable="0" MaxEventCnt="8"/>
+            <TrigOut Polarity="0" MinPulseWidth="0" TrigOutNetType="1" EnableTrigOut="0" TrigOutNet="reveal_debug_top_midi_synth_LA0_net"/>
+            <DistRAM Disable="0"/>
+        </Setting>
+        <Dataset Name="Base">
+            <Trace>
+                <Bus Name="midi_synth/midi_controller/dds_frequency_bus">
+                    <Sig Type="SIG" Name="midi_synth/midi_controller/dds_frequency_bus:0"/>
+                    <Sig Type="SIG" Name="midi_synth/midi_controller/dds_frequency_bus:1"/>
+                    <Sig Type="SIG" Name="midi_synth/midi_controller/dds_frequency_bus:2"/>
+                    <Sig Type="SIG" Name="midi_synth/midi_controller/dds_frequency_bus:3"/>
+                    <Sig Type="SIG" Name="midi_synth/midi_controller/dds_frequency_bus:4"/>
+                    <Sig Type="SIG" Name="midi_synth/midi_controller/dds_frequency_bus:5"/>
+                    <Sig Type="SIG" Name="midi_synth/midi_controller/dds_frequency_bus:6"/>
+                    <Sig Type="SIG" Name="midi_synth/midi_controller/dds_frequency_bus:7"/>
+                    <Sig Type="SIG" Name="midi_synth/midi_controller/dds_frequency_bus:8"/>
+                    <Sig Type="SIG" Name="midi_synth/midi_controller/dds_frequency_bus:9"/>
+                    <Sig Type="SIG" Name="midi_synth/midi_controller/dds_frequency_bus:10"/>
+                    <Sig Type="SIG" Name="midi_synth/midi_controller/dds_frequency_bus:11"/>
+                    <Sig Type="SIG" Name="midi_synth/midi_controller/dds_frequency_bus:12"/>
+                    <Sig Type="SIG" Name="midi_synth/midi_controller/dds_frequency_bus:13"/>
+                    <Sig Type="SIG" Name="midi_synth/midi_controller/dds_frequency_bus:14"/>
+                    <Sig Type="SIG" Name="midi_synth/midi_controller/dds_frequency_bus:15"/>
+                    <Sig Type="SIG" Name="midi_synth/midi_controller/dds_frequency_bus:16"/>
+                    <Sig Type="SIG" Name="midi_synth/midi_controller/dds_frequency_bus:17"/>
+                    <Sig Type="SIG" Name="midi_synth/midi_controller/dds_frequency_bus:18"/>
+                    <Sig Type="SIG" Name="midi_synth/midi_controller/dds_frequency_bus:19"/>
+                    <Sig Type="SIG" Name="midi_synth/midi_controller/dds_frequency_bus:20"/>
+                    <Sig Type="SIG" Name="midi_synth/midi_controller/dds_frequency_bus:21"/>
+                    <Sig Type="SIG" Name="midi_synth/midi_controller/dds_frequency_bus:22"/>
+                    <Sig Type="SIG" Name="midi_synth/midi_controller/dds_frequency_bus:23"/>
+                    <Sig Type="SIG" Name="midi_synth/midi_controller/dds_frequency_bus:24"/>
+                    <Sig Type="SIG" Name="midi_synth/midi_controller/dds_frequency_bus:25"/>
+                    <Sig Type="SIG" Name="midi_synth/midi_controller/dds_frequency_bus:26"/>
+                    <Sig Type="SIG" Name="midi_synth/midi_controller/dds_frequency_bus:27"/>
+                    <Sig Type="SIG" Name="midi_synth/midi_controller/dds_frequency_bus:28"/>
+                    <Sig Type="SIG" Name="midi_synth/midi_controller/dds_frequency_bus:29"/>
+                    <Sig Type="SIG" Name="midi_synth/midi_controller/dds_frequency_bus:30"/>
+                    <Sig Type="SIG" Name="midi_synth/midi_controller/dds_frequency_bus:31"/>
+                </Bus>
+                <Bus Name="midi_synth/midi_controller/key_state">
+                    <Sig Type="SIG" Name="midi_synth/midi_controller/key_state:0"/>
+                    <Sig Type="SIG" Name="midi_synth/midi_controller/key_state:1"/>
+                    <Sig Type="SIG" Name="midi_synth/midi_controller/key_state:2"/>
+                    <Sig Type="SIG" Name="midi_synth/midi_controller/key_state:3"/>
+                </Bus>
+                <Bus Name="midi_synth/midi_controller/midi_byte_converter_input">
+                    <Sig Type="SIG" Name="midi_synth/midi_controller/midi_byte_converter_input:0"/>
+                    <Sig Type="SIG" Name="midi_synth/midi_controller/midi_byte_converter_input:1"/>
+                    <Sig Type="SIG" Name="midi_synth/midi_controller/midi_byte_converter_input:2"/>
+                    <Sig Type="SIG" Name="midi_synth/midi_controller/midi_byte_converter_input:3"/>
+                    <Sig Type="SIG" Name="midi_synth/midi_controller/midi_byte_converter_input:4"/>
+                    <Sig Type="SIG" Name="midi_synth/midi_controller/midi_byte_converter_input:5"/>
+                    <Sig Type="SIG" Name="midi_synth/midi_controller/midi_byte_converter_input:6"/>
+                </Bus>
+                <Bus Name="midi_synth/midi_controller/note_state">
+                    <Sig Type="SIG" Name="midi_synth/midi_controller/note_state:0"/>
+                    <Sig Type="SIG" Name="midi_synth/midi_controller/note_state:1"/>
+                </Bus>
+                <Bus Name="midi_synth/midi_controller/tuning_code">
+                    <Sig Type="SIG" Name="midi_synth/midi_controller/tuning_code:0"/>
+                    <Sig Type="SIG" Name="midi_synth/midi_controller/tuning_code:1"/>
+                    <Sig Type="SIG" Name="midi_synth/midi_controller/tuning_code:2"/>
+                    <Sig Type="SIG" Name="midi_synth/midi_controller/tuning_code:3"/>
+                    <Sig Type="SIG" Name="midi_synth/midi_controller/tuning_code:4"/>
+                    <Sig Type="SIG" Name="midi_synth/midi_controller/tuning_code:5"/>
+                    <Sig Type="SIG" Name="midi_synth/midi_controller/tuning_code:6"/>
+                    <Sig Type="SIG" Name="midi_synth/midi_controller/tuning_code:7"/>
+                    <Sig Type="SIG" Name="midi_synth/midi_controller/tuning_code:8"/>
+                    <Sig Type="SIG" Name="midi_synth/midi_controller/tuning_code:9"/>
+                    <Sig Type="SIG" Name="midi_synth/midi_controller/tuning_code:10"/>
+                    <Sig Type="SIG" Name="midi_synth/midi_controller/tuning_code:11"/>
+                    <Sig Type="SIG" Name="midi_synth/midi_controller/tuning_code:12"/>
+                    <Sig Type="SIG" Name="midi_synth/midi_controller/tuning_code:13"/>
+                    <Sig Type="SIG" Name="midi_synth/midi_controller/tuning_code:14"/>
+                    <Sig Type="SIG" Name="midi_synth/midi_controller/tuning_code:15"/>
+                    <Sig Type="SIG" Name="midi_synth/midi_controller/tuning_code:16"/>
+                    <Sig Type="SIG" Name="midi_synth/midi_controller/tuning_code:17"/>
+                    <Sig Type="SIG" Name="midi_synth/midi_controller/tuning_code:18"/>
+                    <Sig Type="SIG" Name="midi_synth/midi_controller/tuning_code:19"/>
+                    <Sig Type="SIG" Name="midi_synth/midi_controller/tuning_code:20"/>
+                    <Sig Type="SIG" Name="midi_synth/midi_controller/tuning_code:21"/>
+                    <Sig Type="SIG" Name="midi_synth/midi_controller/tuning_code:22"/>
+                    <Sig Type="SIG" Name="midi_synth/midi_controller/tuning_code:23"/>
+                    <Sig Type="SIG" Name="midi_synth/midi_controller/tuning_code:24"/>
+                    <Sig Type="SIG" Name="midi_synth/midi_controller/tuning_code:25"/>
+                    <Sig Type="SIG" Name="midi_synth/midi_controller/tuning_code:26"/>
+                    <Sig Type="SIG" Name="midi_synth/midi_controller/tuning_code:27"/>
+                    <Sig Type="SIG" Name="midi_synth/midi_controller/tuning_code:28"/>
+                    <Sig Type="SIG" Name="midi_synth/midi_controller/tuning_code:29"/>
+                    <Sig Type="SIG" Name="midi_synth/midi_controller/tuning_code:30"/>
+                    <Sig Type="SIG" Name="midi_synth/midi_controller/tuning_code:31"/>
+                </Bus>
+                <Bus Name="midi_synth/midi_controller/voice_RAM_addr">
+                    <Sig Type="SIG" Name="midi_synth/midi_controller/voice_RAM_addr:0"/>
+                    <Sig Type="SIG" Name="midi_synth/midi_controller/voice_RAM_addr:1"/>
+                    <Sig Type="SIG" Name="midi_synth/midi_controller/voice_RAM_addr:2"/>
+                    <Sig Type="SIG" Name="midi_synth/midi_controller/voice_RAM_addr:3"/>
+                    <Sig Type="SIG" Name="midi_synth/midi_controller/voice_RAM_addr:4"/>
+                    <Sig Type="SIG" Name="midi_synth/midi_controller/voice_RAM_addr:5"/>
+                    <Sig Type="SIG" Name="midi_synth/midi_controller/voice_RAM_addr:6"/>
+                </Bus>
+                <Bus Name="midi_synth/midi_controller/voice_RAM_din">
+                    <Sig Type="SIG" Name="midi_synth/midi_controller/voice_RAM_din:0"/>
+                    <Sig Type="SIG" Name="midi_synth/midi_controller/voice_RAM_din:1"/>
+                    <Sig Type="SIG" Name="midi_synth/midi_controller/voice_RAM_din:2"/>
+                    <Sig Type="SIG" Name="midi_synth/midi_controller/voice_RAM_din:3"/>
+                </Bus>
+                <Bus Name="midi_synth/midi_controller/voice_RAM_dout">
+                    <Sig Type="SIG" Name="midi_synth/midi_controller/voice_RAM_dout:0"/>
+                    <Sig Type="SIG" Name="midi_synth/midi_controller/voice_RAM_dout:1"/>
+                    <Sig Type="SIG" Name="midi_synth/midi_controller/voice_RAM_dout:2"/>
+                    <Sig Type="SIG" Name="midi_synth/midi_controller/voice_RAM_dout:3"/>
+                </Bus>
+                <Sig Type="SIG" Name="midi_synth/midi_controller/voice_RAM_write_en"/>
+                <Bus Name="midi_synth/midi_controller/voice_index">
+                    <Sig Type="SIG" Name="midi_synth/midi_controller/voice_index:0"/>
+                    <Sig Type="SIG" Name="midi_synth/midi_controller/voice_index:1"/>
+                    <Sig Type="SIG" Name="midi_synth/midi_controller/voice_index:2"/>
+                    <Sig Type="SIG" Name="midi_synth/midi_controller/voice_index:3"/>
+                </Bus>
+                <Sig Type="SIG" Name="midi_synth/midi_controller/midi_byte_ready"/>
+            </Trace>
+            <Trigger>
+                <TU Serialbits="0" Type="0" ID="1" Sig="midi_synth/midi_controller/midi_byte_ready,"/>
+                <TE MaxSequence="1" MaxEvnCnt="1" ID="1" Resource="1"/>
+            </Trigger>
+        </Dataset>
+    </Core>
+</Project>

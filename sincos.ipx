@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<DiamondModule name="sincos" module="sincos" VendorName="Lattice Semiconductor Corporation" generator="IPexpress" date="2017 01 02 18:22:09.092" version="1.6" type="Module" synthesis="lse" source_format="Verilog HDL">
+  <Package>
+		<File name="sincos.lpc" type="lpc" modified="2017 01 02 18:22:07.918"/>
+		<File name="sincos.v" type="top_level_verilog" modified="2017 01 02 18:22:07.959"/>
+		<File name="sincos_tmpl.v" type="template_verilog" modified="2017 01 02 18:22:07.961"/>
+		<File name="tb_sincos_tmpl.v" type="testbench_verilog" modified="2017 01 02 18:22:07.971"/>
+  </Package>
+</DiamondModule>

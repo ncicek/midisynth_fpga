@@ -1,0 +1,173 @@
+<!DOCTYPE ispTLA>
+<ispTLA>
+ <CreationDate>Sat Feb 4 01:09:48 2017</CreationDate>
+ <XCFFileName/>
+ <CableSetting>
+  <IsTRSTConnected val="false"/>
+  <TRSTSetting val="0"/>
+  <IsBSCANConnected val="false"/>
+  <BSCANSetting val="0"/>
+  <CableType val="USB2"/>
+  <PortAddress val="0"/>
+  <PortSetting val="0"/>
+  <TCKDelay val="1"/>
+ </CableSetting>
+ <DeviceCount>1</DeviceCount>
+ <Device>
+  <DeviceIndex>0</DeviceIndex>
+  <DeviceName>1. LCMXO3LF-6900C</DeviceName>
+  <DeviceID>0x612BD043</DeviceID>
+  <HasIspTRACY>true</HasIspTRACY>
+  <HasJTAG2WB>false</HasJTAG2WB>
+  <SERDES/>
+  <IRBypassLen>8</IRBypassLen>
+  <RVLFileName>reveal.rvl</RVLFileName>
+  <RVSFileName>reveal.rvs</RVSFileName>
+  <LACoreCount>1</LACoreCount>
+  <WinUI CoreIndex="0">
+   <TraceSigTreeData>
+    <TraceSignal IsHidden="false" Name="TU1" NodeType="0" PortIndex="99"/>
+    <TraceSignal IsHidden="false" Name="midi_synth/midi_controller/dds_frequency_bus" NodeType="1" PortIndex="0">
+     <BusRadix Radix="0"/>
+     <IsExpanded Expand="false"/>
+    </TraceSignal>
+    <TraceSignal IsHidden="false" Name="midi_synth/midi_controller/dds_frequency_bus:0" NodeType="2" PortIndex="0"/>
+    <TraceSignal IsHidden="false" Name="midi_synth/midi_controller/dds_frequency_bus:1" NodeType="2" PortIndex="1"/>
+    <TraceSignal IsHidden="false" Name="midi_synth/midi_controller/dds_frequency_bus:2" NodeType="2" PortIndex="2"/>
+    <TraceSignal IsHidden="false" Name="midi_synth/midi_controller/dds_frequency_bus:3" NodeType="2" PortIndex="3"/>
+    <TraceSignal IsHidden="false" Name="midi_synth/midi_controller/dds_frequency_bus:4" NodeType="2" PortIndex="4"/>
+    <TraceSignal IsHidden="false" Name="midi_synth/midi_controller/dds_frequency_bus:5" NodeType="2" PortIndex="5"/>
+    <TraceSignal IsHidden="false" Name="midi_synth/midi_controller/dds_frequency_bus:6" NodeType="2" PortIndex="6"/>
+    <TraceSignal IsHidden="false" Name="midi_synth/midi_controller/dds_frequency_bus:7" NodeType="2" PortIndex="7"/>
+    <TraceSignal IsHidden="false" Name="midi_synth/midi_controller/dds_frequency_bus:8" NodeType="2" PortIndex="8"/>
+    <TraceSignal IsHidden="false" Name="midi_synth/midi_controller/dds_frequency_bus:9" NodeType="2" PortIndex="9"/>
+    <TraceSignal IsHidden="false" Name="midi_synth/midi_controller/dds_frequency_bus:10" NodeType="2" PortIndex="10"/>
+    <TraceSignal IsHidden="false" Name="midi_synth/midi_controller/dds_frequency_bus:11" NodeType="2" PortIndex="11"/>
+    <TraceSignal IsHidden="false" Name="midi_synth/midi_controller/dds_frequency_bus:12" NodeType="2" PortIndex="12"/>
+    <TraceSignal IsHidden="false" Name="midi_synth/midi_controller/dds_frequency_bus:13" NodeType="2" PortIndex="13"/>
+    <TraceSignal IsHidden="false" Name="midi_synth/midi_controller/dds_frequency_bus:14" NodeType="2" PortIndex="14"/>
+    <TraceSignal IsHidden="false" Name="midi_synth/midi_controller/dds_frequency_bus:15" NodeType="2" PortIndex="15"/>
+    <TraceSignal IsHidden="false" Name="midi_synth/midi_controller/dds_frequency_bus:16" NodeType="2" PortIndex="16"/>
+    <TraceSignal IsHidden="false" Name="midi_synth/midi_controller/dds_frequency_bus:17" NodeType="2" PortIndex="17"/>
+    <TraceSignal IsHidden="false" Name="midi_synth/midi_controller/dds_frequency_bus:18" NodeType="2" PortIndex="18"/>
+    <TraceSignal IsHidden="false" Name="midi_synth/midi_controller/dds_frequency_bus:19" NodeType="2" PortIndex="19"/>
+    <TraceSignal IsHidden="false" Name="midi_synth/midi_controller/dds_frequency_bus:20" NodeType="2" PortIndex="20"/>
+    <TraceSignal IsHidden="false" Name="midi_synth/midi_controller/dds_frequency_bus:21" NodeType="2" PortIndex="21"/>
+    <TraceSignal IsHidden="false" Name="midi_synth/midi_controller/dds_frequency_bus:22" NodeType="2" PortIndex="22"/>
+    <TraceSignal IsHidden="false" Name="midi_synth/midi_controller/dds_frequency_bus:23" NodeType="2" PortIndex="23"/>
+    <TraceSignal IsHidden="false" Name="midi_synth/midi_controller/dds_frequency_bus:24" NodeType="2" PortIndex="24"/>
+    <TraceSignal IsHidden="false" Name="midi_synth/midi_controller/dds_frequency_bus:25" NodeType="2" PortIndex="25"/>
+    <TraceSignal IsHidden="false" Name="midi_synth/midi_controller/dds_frequency_bus:26" NodeType="2" PortIndex="26"/>
+    <TraceSignal IsHidden="false" Name="midi_synth/midi_controller/dds_frequency_bus:27" NodeType="2" PortIndex="27"/>
+    <TraceSignal IsHidden="false" Name="midi_synth/midi_controller/dds_frequency_bus:28" NodeType="2" PortIndex="28"/>
+    <TraceSignal IsHidden="false" Name="midi_synth/midi_controller/dds_frequency_bus:29" NodeType="2" PortIndex="29"/>
+    <TraceSignal IsHidden="false" Name="midi_synth/midi_controller/dds_frequency_bus:30" NodeType="2" PortIndex="30"/>
+    <TraceSignal IsHidden="false" Name="midi_synth/midi_controller/dds_frequency_bus:31" NodeType="2" PortIndex="31"/>
+    <TraceSignal IsHidden="false" Name="midi_synth/midi_controller/key_state" NodeType="1" PortIndex="32">
+     <BusRadix Radix="0"/>
+     <IsExpanded Expand="false"/>
+    </TraceSignal>
+    <TraceSignal IsHidden="false" Name="midi_synth/midi_controller/key_state:0" NodeType="2" PortIndex="32"/>
+    <TraceSignal IsHidden="false" Name="midi_synth/midi_controller/key_state:1" NodeType="2" PortIndex="33"/>
+    <TraceSignal IsHidden="false" Name="midi_synth/midi_controller/key_state:2" NodeType="2" PortIndex="34"/>
+    <TraceSignal IsHidden="false" Name="midi_synth/midi_controller/key_state:3" NodeType="2" PortIndex="35"/>
+    <TraceSignal IsHidden="false" Name="midi_synth/midi_controller/midi_byte_converter_input" NodeType="1" PortIndex="36">
+     <BusRadix Radix="0"/>
+     <IsExpanded Expand="false"/>
+    </TraceSignal>
+    <TraceSignal IsHidden="false" Name="midi_synth/midi_controller/midi_byte_converter_input:0" NodeType="2" PortIndex="36"/>
+    <TraceSignal IsHidden="false" Name="midi_synth/midi_controller/midi_byte_converter_input:1" NodeType="2" PortIndex="37"/>
+    <TraceSignal IsHidden="false" Name="midi_synth/midi_controller/midi_byte_converter_input:2" NodeType="2" PortIndex="38"/>
+    <TraceSignal IsHidden="false" Name="midi_synth/midi_controller/midi_byte_converter_input:3" NodeType="2" PortIndex="39"/>
+    <TraceSignal IsHidden="false" Name="midi_synth/midi_controller/midi_byte_converter_input:4" NodeType="2" PortIndex="40"/>
+    <TraceSignal IsHidden="false" Name="midi_synth/midi_controller/midi_byte_converter_input:5" NodeType="2" PortIndex="41"/>
+    <TraceSignal IsHidden="false" Name="midi_synth/midi_controller/midi_byte_converter_input:6" NodeType="2" PortIndex="42"/>
+    <TraceSignal IsHidden="false" Name="midi_synth/midi_controller/note_state" NodeType="1" PortIndex="43">
+     <BusRadix Radix="0"/>
+     <IsExpanded Expand="false"/>
+    </TraceSignal>
+    <TraceSignal IsHidden="false" Name="midi_synth/midi_controller/note_state:0" NodeType="2" PortIndex="43"/>
+    <TraceSignal IsHidden="false" Name="midi_synth/midi_controller/note_state:1" NodeType="2" PortIndex="44"/>
+    <TraceSignal IsHidden="false" Name="midi_synth/midi_controller/tuning_code" NodeType="1" PortIndex="45">
+     <BusRadix Radix="0"/>
+     <IsExpanded Expand="false"/>
+    </TraceSignal>
+    <TraceSignal IsHidden="false" Name="midi_synth/midi_controller/tuning_code:0" NodeType="2" PortIndex="45"/>
+    <TraceSignal IsHidden="false" Name="midi_synth/midi_controller/tuning_code:1" NodeType="2" PortIndex="46"/>
+    <TraceSignal IsHidden="false" Name="midi_synth/midi_controller/tuning_code:2" NodeType="2" PortIndex="47"/>
+    <TraceSignal IsHidden="false" Name="midi_synth/midi_controller/tuning_code:3" NodeType="2" PortIndex="48"/>
+    <TraceSignal IsHidden="false" Name="midi_synth/midi_controller/tuning_code:4" NodeType="2" PortIndex="49"/>
+    <TraceSignal IsHidden="false" Name="midi_synth/midi_controller/tuning_code:5" NodeType="2" PortIndex="50"/>
+    <TraceSignal IsHidden="false" Name="midi_synth/midi_controller/tuning_code:6" NodeType="2" PortIndex="51"/>
+    <TraceSignal IsHidden="false" Name="midi_synth/midi_controller/tuning_code:7" NodeType="2" PortIndex="52"/>
+    <TraceSignal IsHidden="false" Name="midi_synth/midi_controller/tuning_code:8" NodeType="2" PortIndex="53"/>
+    <TraceSignal IsHidden="false" Name="midi_synth/midi_controller/tuning_code:9" NodeType="2" PortIndex="54"/>
+    <TraceSignal IsHidden="false" Name="midi_synth/midi_controller/tuning_code:10" NodeType="2" PortIndex="55"/>
+    <TraceSignal IsHidden="false" Name="midi_synth/midi_controller/tuning_code:11" NodeType="2" PortIndex="56"/>
+    <TraceSignal IsHidden="false" Name="midi_synth/midi_controller/tuning_code:12" NodeType="2" PortIndex="57"/>
+    <TraceSignal IsHidden="false" Name="midi_synth/midi_controller/tuning_code:13" NodeType="2" PortIndex="58"/>
+    <TraceSignal IsHidden="false" Name="midi_synth/midi_controller/tuning_code:14" NodeType="2" PortIndex="59"/>
+    <TraceSignal IsHidden="false" Name="midi_synth/midi_controller/tuning_code:15" NodeType="2" PortIndex="60"/>
+    <TraceSignal IsHidden="false" Name="midi_synth/midi_controller/tuning_code:16" NodeType="2" PortIndex="61"/>
+    <TraceSignal IsHidden="false" Name="midi_synth/midi_controller/tuning_code:17" NodeType="2" PortIndex="62"/>
+    <TraceSignal IsHidden="false" Name="midi_synth/midi_controller/tuning_code:18" NodeType="2" PortIndex="63"/>
+    <TraceSignal IsHidden="false" Name="midi_synth/midi_controller/tuning_code:19" NodeType="2" PortIndex="64"/>
+    <TraceSignal IsHidden="false" Name="midi_synth/midi_controller/tuning_code:20" NodeType="2" PortIndex="65"/>
+    <TraceSignal IsHidden="false" Name="midi_synth/midi_controller/tuning_code:21" NodeType="2" PortIndex="66"/>
+    <TraceSignal IsHidden="false" Name="midi_synth/midi_controller/tuning_code:22" NodeType="2" PortIndex="67"/>
+    <TraceSignal IsHidden="false" Name="midi_synth/midi_controller/tuning_code:23" NodeType="2" PortIndex="68"/>
+    <TraceSignal IsHidden="false" Name="midi_synth/midi_controller/tuning_code:24" NodeType="2" PortIndex="69"/>
+    <TraceSignal IsHidden="false" Name="midi_synth/midi_controller/tuning_code:25" NodeType="2" PortIndex="70"/>
+    <TraceSignal IsHidden="false" Name="midi_synth/midi_controller/tuning_code:26" NodeType="2" PortIndex="71"/>
+    <TraceSignal IsHidden="false" Name="midi_synth/midi_controller/tuning_code:27" NodeType="2" PortIndex="72"/>
+    <TraceSignal IsHidden="false" Name="midi_synth/midi_controller/tuning_code:28" NodeType="2" PortIndex="73"/>
+    <TraceSignal IsHidden="false" Name="midi_synth/midi_controller/tuning_code:29" NodeType="2" PortIndex="74"/>
+    <TraceSignal IsHidden="false" Name="midi_synth/midi_controller/tuning_code:30" NodeType="2" PortIndex="75"/>
+    <TraceSignal IsHidden="false" Name="midi_synth/midi_controller/tuning_code:31" NodeType="2" PortIndex="76"/>
+    <TraceSignal IsHidden="false" Name="midi_synth/midi_controller/voice_RAM_addr" NodeType="1" PortIndex="77">
+     <BusRadix Radix="0"/>
+     <IsExpanded Expand="false"/>
+    </TraceSignal>
+    <TraceSignal IsHidden="false" Name="midi_synth/midi_controller/voice_RAM_addr:0" NodeType="2" PortIndex="77"/>
+    <TraceSignal IsHidden="false" Name="midi_synth/midi_controller/voice_RAM_addr:1" NodeType="2" PortIndex="78"/>
+    <TraceSignal IsHidden="false" Name="midi_synth/midi_controller/voice_RAM_addr:2" NodeType="2" PortIndex="79"/>
+    <TraceSignal IsHidden="false" Name="midi_synth/midi_controller/voice_RAM_addr:3" NodeType="2" PortIndex="80"/>
+    <TraceSignal IsHidden="false" Name="midi_synth/midi_controller/voice_RAM_addr:4" NodeType="2" PortIndex="81"/>
+    <TraceSignal IsHidden="false" Name="midi_synth/midi_controller/voice_RAM_addr:5" NodeType="2" PortIndex="82"/>
+    <TraceSignal IsHidden="false" Name="midi_synth/midi_controller/voice_RAM_addr:6" NodeType="2" PortIndex="83"/>
+    <TraceSignal IsHidden="false" Name="midi_synth/midi_controller/voice_RAM_din" NodeType="1" PortIndex="84">
+     <BusRadix Radix="0"/>
+     <IsExpanded Expand="false"/>
+    </TraceSignal>
+    <TraceSignal IsHidden="false" Name="midi_synth/midi_controller/voice_RAM_din:0" NodeType="2" PortIndex="84"/>
+    <TraceSignal IsHidden="false" Name="midi_synth/midi_controller/voice_RAM_din:1" NodeType="2" PortIndex="85"/>
+    <TraceSignal IsHidden="false" Name="midi_synth/midi_controller/voice_RAM_din:2" NodeType="2" PortIndex="86"/>
+    <TraceSignal IsHidden="false" Name="midi_synth/midi_controller/voice_RAM_din:3" NodeType="2" PortIndex="87"/>
+    <TraceSignal IsHidden="false" Name="midi_synth/midi_controller/voice_RAM_dout" NodeType="1" PortIndex="88">
+     <BusRadix Radix="0"/>
+     <IsExpanded Expand="false"/>
+    </TraceSignal>
+    <TraceSignal IsHidden="false" Name="midi_synth/midi_controller/voice_RAM_dout:0" NodeType="2" PortIndex="88"/>
+    <TraceSignal IsHidden="false" Name="midi_synth/midi_controller/voice_RAM_dout:1" NodeType="2" PortIndex="89"/>
+    <TraceSignal IsHidden="false" Name="midi_synth/midi_controller/voice_RAM_dout:2" NodeType="2" PortIndex="90"/>
+    <TraceSignal IsHidden="false" Name="midi_synth/midi_controller/voice_RAM_dout:3" NodeType="2" PortIndex="91"/>
+    <TraceSignal IsHidden="false" Name="midi_synth/midi_controller/voice_RAM_write_en" NodeType="0" PortIndex="92"/>
+    <TraceSignal IsHidden="false" Name="midi_synth/midi_controller/voice_index" NodeType="1" PortIndex="93">
+     <BusRadix Radix="0"/>
+     <IsExpanded Expand="false"/>
+    </TraceSignal>
+    <TraceSignal IsHidden="false" Name="midi_synth/midi_controller/voice_index:0" NodeType="2" PortIndex="93"/>
+    <TraceSignal IsHidden="false" Name="midi_synth/midi_controller/voice_index:1" NodeType="2" PortIndex="94"/>
+    <TraceSignal IsHidden="false" Name="midi_synth/midi_controller/voice_index:2" NodeType="2" PortIndex="95"/>
+    <TraceSignal IsHidden="false" Name="midi_synth/midi_controller/voice_index:3" NodeType="2" PortIndex="96"/>
+    <TraceSignal IsHidden="false" Name="clk" NodeType="0" PortIndex="97"/>
+    <TraceSignal IsHidden="false" Name="midi_synth/midi_controller/midi_byte_ready" NodeType="0" PortIndex="98"/>
+   </TraceSigTreeData>
+   <TriggerUI UserSelect="1" PreSelectType="0" PreSelect="0" UserSelectPos="56"/>
+   <CoreRun Run="true"/>
+   <CoreWndUIData>
+    <ClockFrequency Unit="ns" Frequency="-1.0"/>
+   </CoreWndUIData>
+  </WinUI>
+ </Device>
+</ispTLA>
