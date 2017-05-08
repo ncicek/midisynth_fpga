@@ -1,4 +1,4 @@
-module ADSR(
+module voice_controller(
 	input wire clk,
 	input wire reset,
 	
@@ -23,8 +23,12 @@ module ADSR(
 				
 				0:	begin 
 					//load an address to the ram
-					ram_we <= 1'b0;
-					ram_address <= voice_counter;
+					state_ram_we <= 1'b0;
+                    parameter_ram_we <= 1'b0;
+                    
+					state_ram_address <= voice_counter;
+                    parameter_ram_address <= voice_counter;
+                    
 					voice_counter <= voice_counter + 1;
 					
 					if (voice_counter == 8'hff)
@@ -34,11 +38,17 @@ module ADSR(
 				end
 				
 				1:	begin 
-					//ram output is now showing the ram contents at that address
-					//load up all the controller outputs using these ram values
+					//ram outputs are now showing the ram contents at that address
+					//load up all the voice states and parameteres using these ram values
 					
-					tuning_code = ram_q[4:2]
-					//TODO complete this section
+                    //TODO complete this section
+                    //load parameters
+					attack <= parameter_ram_q[4:2]
+                    
+                    
+                    
+                    //load states
+					tuning_code <= state_ram_q[4:2]
 					
 					state <= 4'd2;
 				end
@@ -46,17 +56,22 @@ module ADSR(
 				2:	begin 
 					//by now the modules should have completed their task and updated their state
 					//save the state statuses into ram
-					ram_we <= 1'b1;
-					ram_data[2:3] <= a;
-					//TODO
+					state_ram_we <= 1'b1;
+                    
+                    //TODO write all states here
+					state_ram_data[2:3] <= envelope;
+					
 					
 					state <= 4'd0;
 				end
 									
-				3:	begin 
+				3:	begin //PARAMETER UPDATER
 					//come here every time the counter is about to overflow
 					//grabs new parameter updates from the midi controller and puts it into ram
-					
+					parameter_ram_we <= 1'b1;
+                    
+                    
+                    
 					state <= 4'd0;
 				end
 				
