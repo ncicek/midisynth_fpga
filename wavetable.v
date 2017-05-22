@@ -52,6 +52,11 @@ module wavetable(
       4'd3:	begin
         sample <= square_sample;
       end
+	  
+	  default: begin
+		sample <= square_sample;
+	  end
+	  
     endcase
 
   end

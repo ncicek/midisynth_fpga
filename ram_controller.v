@@ -3,13 +3,18 @@ module voice_controller(
 	input wire reset,
 	
 	
-	);			
+	);		
 
-	//IDEA segragate parameter ram from state ram
+
+	reg [31:0] delta_phase;
+	reg [31:0] phase_acumulator;
+	dds dds(.clk(clk),.reset(reset),.delta_phase(delta_phase),.phase_acumulator(phase_acumulator),.output_phase(output_phase));
 	
+	reg [3:0] wave_select;
+	wavetable wavetable(.clk(clk),.phase(dds_phase),.wave_select(wave_select),.sample(sample));
+
 	
 	reg [3:0] state;	
-	
 	reg [7:0] voice_counter;
 	
 	always @(posedge clk or negedge reset) begin
@@ -43,6 +48,8 @@ module voice_controller(
 					
                     //TODO complete this section
                     //load parameters
+					delta_phase <= parameter_ram_q[31:0];
+					wave_select <= parameter_ram_q[35:32];
 					attack <= parameter_ram_q[4:2]
                     
                     
