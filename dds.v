@@ -62,7 +62,11 @@ module dds(
 
 		end
 		else begin
-
+            //read the data at the current voice index
+            //data represents the current voice index's previous phase
+            //add this previous phase + the current delta_phase to create the current phase
+            
+            //write the current phase to the same voice index adress on the next posedge
 			AddressReader <= voice_index;
 			output_phase <= QReader + delta_phase;
 			
