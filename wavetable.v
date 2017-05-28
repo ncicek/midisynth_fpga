@@ -1,6 +1,6 @@
 module wavetable(
 	input wire clk,
-
+	input wire reset,
   //input
 	input wire [9:0] phase,
 
@@ -10,9 +10,11 @@ module wavetable(
   //output
 	output reg signed [15:0] sample
 	);
+	
+	
 
-
-
+	wire signed [15:0] square_sample;
+	wire signed [15:0] sine_sample;
 
   sincos sinetable
   (
@@ -36,29 +38,29 @@ module wavetable(
 
 	always @(posedge clk) begin
 
-    case (wave_select)
-      4'd0:	begin
-        sample <= sine_sample;
-      end
+		case (wave_select)
+		  4'd0:	begin
+			sample <= sine_sample;
+		  end
 
-      4'd1:	begin
-        sample <= square_sample;
-      end
+		  4'd1:	begin
+			sample <= square_sample;
+		  end
 
-      4'd2:	begin
-        sample <= square_sample;
-      end
+		  4'd2:	begin
+			sample <= square_sample;
+		  end
 
-      4'd3:	begin
-        sample <= square_sample;
-      end
-	  
-	  default: begin
-		sample <= square_sample;
-	  end
-	  
-    endcase
+		  4'd3:	begin
+			sample <= square_sample;
+		  end
+		  
+		  default: begin
+			sample <= square_sample;
+		  end
+		  
+		endcase
 
-  end
+	end
 
 endmodule

@@ -7,9 +7,10 @@ module dds(
 	input wire[7:0] voice_index,
 
 	//outputs
-	output reg[31:0] output_phase
+	output reg[9:0] output_phase
 	);
 
+	
 	
 	reg [31:0] DataInWriter = 32'b0;
 	reg [7:0] AddressReader = 8'b0;
@@ -52,7 +53,7 @@ module dds(
 	.QB()
 	);
 	
-
+   	reg [31:0] temp; 
 	always @(posedge clk or posedge reset) begin
 		if (reset) begin
 			DataInWriter <= 32'b0;
@@ -62,15 +63,16 @@ module dds(
 
 		end
 		else begin
-
-			AddressReader <= voice_index;
-			output_phase <= QReader + delta_phase;
+			AddressReader <= voice_index;	
+			
+			//verilog makes me want to cry :_(
+			temp = QReader + delta_phase;
+			output_phase <= temp[31:22];  
 			
 			AddressWriter <= voice_index-1;
 			DataInWriter <= QReader + delta_phase;	
 			WrEn <= 1'b1;				
 
-			
 		end
 	end
 
