@@ -4,22 +4,32 @@ module voice_controller(
 	
 	output reg signed [23:0] output_sample
 	);		
+	
+	
+	reg [7:0] voice_counter;
 
     reg signed [23:0] mixer_buffer = 24'sd0;
 
 	reg [31:0] delta_phase;
-	reg [31:0] phase_acumulator;
-	dds dds(.clk(clk),.reset(reset),.delta_phase(delta_phase),.phase_acumulator(phase_acumulator),.output_phase(output_phase));
+	wire [9:0] dds_phase;
+	dds dds(.clk(clk),.reset(reset),.delta_phase(delta_phase),.voice_index(voice_counter),.output_phase(dds_phase));
 	
-	reg [3:0] wave_select;
-	wavetable wavetable(.clk(clk),.phase(dds_phase),.wave_select(wave_select),.sample(sample));
+	reg [3:0] wave_select;	
+	wire signed [15:0] voice_chain_output;
+	wavetable wavetable(.clk(clk),.reset(reset),.phase(dds_phase),.wave_select(wave_select),.sample(voice_chain_output));
 
 	
-	reg [3:0] state;	
-	reg [7:0] voice_counter;
 	
-	always @(posedge clk or negedge reset) begin
-		if (~reset) begin
+	reg parameter_ram_we;
+	reg [7:0] parameter_ram_address;
+
+	
+	
+	reg [3:0] state;	
+	
+	
+	always @(posedge clk or posedge reset) begin
+		if (reset) begin
 			state <= 4'b0;
 			voice_counter <= 8'd0;
             mixer_buffer <= 24'sd0;
@@ -37,13 +47,7 @@ module voice_controller(
                     
 					voice_counter <= voice_counter + 1;
 					
-					if (voice_counter == 8'hff) begin
-                        output_sample <= mixer_buffer;  //spit out a mixed sample
-                        mixer_buffer <= 24'sd0;   //clear the mixer buffer when voice counter is full to prepare for the next sample
-						state <= 4'd3;
-                    end
-					else
-						state <= 4'd1;
+					state <= 4'd1;
 				end
 				
 				1:	begin 
@@ -52,11 +56,13 @@ module voice_controller(
 					
                     //TODO complete this section
                     //load parameters
-					delta_phase <= parameter_ram_q[31:0];
-					wave_select <= parameter_ram_q[35:32];
-					attack <= parameter_ram_q[4:2]
-                    
-
+					
+					//delta_phase <= parameter_ram_q[31:0];
+					//wave_select <= parameter_ram_q[35:32];
+					//attack <= parameter_ram_q[4:2];
+					
+					delta_phase <= 10000;
+                    wave_select <= 0;
 					
 					state <= 4'd2;
 				end
@@ -64,10 +70,18 @@ module voice_controller(
 				2:	begin 
 					//by now the modules should have produced a sample
 					//mix the buffer contents
-
-					mixer_buffer <= mixer_buffer + voice_chain_output;
 					
-					state <= 4'd0;
+					if (voice_counter == 8'hff) begin
+                        output_sample <= mixer_buffer;  //spit out a mixed sample
+                        mixer_buffer <= 24'sd0;   //clear the mixer buffer when voice counter is full to prepare for the next sample
+						state <= 4'd3;
+                    end
+					else begin
+						mixer_buffer <= mixer_buffer + voice_chain_output;
+						state <= 4'd3;
+					end
+					
+
 				end
 									
 				3:	begin //PARAMETER UPDATER

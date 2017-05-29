@@ -53,7 +53,7 @@ module dds(
 	.QB()
 	);
 	
-   	reg [31:0] temp; 
+   	reg [21:0] temp; 
 	always @(posedge clk or posedge reset) begin
 		if (reset) begin
 			DataInWriter <= 32'b0;
@@ -67,7 +67,7 @@ module dds(
 			
 			//verilog makes me want to cry :_(
 			temp = QReader + delta_phase;
-			output_phase <= temp[31:22];  
+			output_phase <= temp[21:12];  
 			
             //read the data at the current voice index
             //data represents the current voice index's previous phase
