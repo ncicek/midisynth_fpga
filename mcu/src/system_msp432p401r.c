@@ -43,7 +43,7 @@
 //*****************************************************************************
 
 #include <stdint.h>
-#include "msp.h"
+#include <ti/devices/msp432p4xx/inc/msp.h>
 
 /*--------------------- Configuration Instructions ----------------------------
    1. If you prefer to halt the Watchdog Timer, set __HALT_WDT to 1:
@@ -293,7 +293,7 @@ void SystemInit(void)
     CS->KEY = CS_KEY_VAL;                                  // Unlock CS module for register access
     CS->CTL0 = CS_CTL0_DCORSEL_0;                          // Set DCO to 1.5MHz
     CS->CTL1 = (CS->CTL1 & ~(CS_CTL1_SELM_MASK | CS_CTL1_DIVM_MASK)) | CS_CTL1_SELM__DCOCLK;
-	                                                       // Select MCLK as DCO source
+                                                           // Select MCLK as DCO source
     CS->KEY = 0;
 
     // Set Flash Bank read buffering
@@ -316,7 +316,7 @@ void SystemInit(void)
     CS->KEY = CS_KEY_VAL;                                  // Unlock CS module for register access
     CS->CTL0 = CS_CTL0_DCORSEL_1;                          // Set DCO to 1.5MHz
     CS->CTL1 = (CS->CTL1 & ~(CS_CTL1_SELM_MASK | CS_CTL1_DIVM_MASK)) | CS_CTL1_SELM__DCOCLK;
-	                                                       // Select MCLK as DCO source
+                                                           // Select MCLK as DCO source
     CS->KEY = 0;
 
     // Set Flash Bank read buffering
@@ -339,7 +339,7 @@ void SystemInit(void)
     CS->KEY = CS_KEY_VAL;                                  // Unlock CS module for register access
     CS->CTL0 = CS_CTL0_DCORSEL_3;                          // Set DCO to 12MHz
     CS->CTL1 = (CS->CTL1 & ~(CS_CTL1_SELM_MASK | CS_CTL1_DIVM_MASK)) | CS_CTL1_SELM__DCOCLK;
-	                                                       // Select MCLK as DCO source
+                                                           // Select MCLK as DCO source
     CS->KEY = 0;
 
     // Set Flash Bank read buffering
@@ -364,7 +364,7 @@ void SystemInit(void)
     CS->KEY = CS_KEY_VAL;                                  // Unlock CS module for register access
     CS->CTL0 = CS_CTL0_DCORSEL_4;                          // Set DCO to 24MHz
     CS->CTL1 = (CS->CTL1 & ~(CS_CTL1_SELM_MASK | CS_CTL1_DIVM_MASK)) | CS_CTL1_SELM__DCOCLK;
-	                                                       // Select MCLK as DCO source
+                                                           // Select MCLK as DCO source
     CS->KEY = 0;
 
     // Set Flash Bank read buffering
@@ -392,7 +392,7 @@ void SystemInit(void)
     CS->KEY = CS_KEY_VAL;                                  // Unlock CS module for register access
     CS->CTL0 = CS_CTL0_DCORSEL_5;                          // Set DCO to 48MHz
     CS->CTL1 = (CS->CTL1 & ~(CS_CTL1_SELM_MASK | CS_CTL1_DIVM_MASK)) | CS_CTL1_SELM__DCOCLK;
-	                                                       // Select MCLK as DCO source
+                                                           // Select MCLK as DCO source
     CS->KEY = 0;
 
     // Set Flash Bank read buffering
@@ -401,3 +401,5 @@ void SystemInit(void)
     #endif
 
 }
+
+
