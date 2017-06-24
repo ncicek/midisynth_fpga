@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<DiamondModule name="mult" module="mult" VendorName="Lattice Semiconductor Corporation" generator="IPexpress" date="2017 01 29 15:33:07.025" version="4.9" type="Module" synthesis="lse" source_format="Verilog HDL">
-  <Package>
-		<File name="mult.lpc" type="lpc" modified="2017 01 29 15:33:05.515"/>
-		<File name="mult.v" type="top_level_verilog" modified="2017 01 29 15:33:05.565"/>
-		<File name="mult_tmpl.v" type="template_verilog" modified="2017 01 29 15:33:05.568"/>
-		<File name="tb_mult_tmpl.v" type="testbench_verilog" modified="2017 01 29 15:33:05.577"/>
-  </Package>
-</DiamondModule>
