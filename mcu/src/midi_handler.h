@@ -12,5 +12,8 @@ void add_note(struct voice voice_table[NUMBER_OF_VOICES], uint8_t midi_note, uin
 uint8_t remove_note(struct voice voice_table[NUMBER_OF_VOICES], uint8_t midi_note);
 uint8_t find_voice_of_note(struct voice voice_table[NUMBER_OF_VOICES], uint8_t note);
 void handleCC(uint8_t cc, uint8_t value);
+uint8_t checkifbyteis (uint8_t byte, uint8_t check);
+void SPI_transmit_wrapper(uint32_t moduleInstance, uint_fast8_t transmitData);
+
 
 #endif

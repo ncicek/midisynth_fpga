@@ -26,15 +26,15 @@ void parseMidi(uint8_t MIDI_Message[]) {
   static uint8_t voice_index=0;
 
 	//check that we got a proper midi message
-	if (MIDI_Message[0] == NOTEON || MIDI_Message[0] == NOTEOFF || MIDI_Message[0]==CC ){
-		if (MIDI_Message[1] & (1<<8) == 0 || MIDI_Message[2] & (1<<8) == 0){  //8th bit of valid data bytes should always be 0
-			if (MIDI_Message[0] == NOTEON && MIDI_Message[2] > 0){
-        voice_index = handleNoteOn(voice_table, voice_index, MIDI_Message[1], MIDI_Message[2]);
+	if (checkifbyteis(MIDI_Message[0], NOTEON) || checkifbyteis(MIDI_Message[0], NOTEOFF) || checkifbyteis(MIDI_Message[0], CC)){
+		if ((MIDI_Message[1] >> 7) == 0 || (MIDI_Message[2] >> 7) == 0){  //8th bit of valid data bytes should always be 0
+			if (checkifbyteis(MIDI_Message[0], NOTEON) && MIDI_Message[2] > 0){
+			  voice_index = handleNoteOn(voice_table, voice_index, MIDI_Message[1], MIDI_Message[2]);
       }
-      else if (MIDI_Message[0] == NOTEOFF||(MIDI_Message[0] == NOTEON && MIDI_Message[2] == 0)){
+      else if (checkifbyteis(MIDI_Message[0], NOTEOFF) || (checkifbyteis(MIDI_Message[0], NOTEON) && MIDI_Message[2] == 0)){
 				voice_index = handleNoteOff(voice_table,MIDI_Message[1]);
       }
-			else if(MIDI_Message[0] == CC){
+			else if(checkifbyteis(MIDI_Message[0], CC)){
 				handleCC(MIDI_Message[1], MIDI_Message[2]);
       }
 		}
@@ -45,19 +45,21 @@ void parseMidi(uint8_t MIDI_Message[]) {
 uint8_t handleNoteOn(struct voice voice_table[NUMBER_OF_VOICES], uint8_t voice_index, uint8_t midi_note, uint8_t velocity) {
   MAP_GPIO_toggleOutputOnPin(GPIO_PORT_P2, GPIO_PIN0);
   add_note(voice_table, midi_note, voice_index);
-  MAP_SPI_transmitData(EUSCI_B0_BASE, NOTEON);
-  MAP_SPI_transmitData(EUSCI_B0_BASE, voice_index);
-  MAP_SPI_transmitData(EUSCI_B0_BASE, midi_note);
-  MAP_SPI_transmitData(EUSCI_B0_BASE, velocity);
+
+  SPI_transmit_wrapper(EUSCI_B0_BASE, NOTEON);
+  SPI_transmit_wrapper(EUSCI_B0_BASE, voice_index);
+  SPI_transmit_wrapper(EUSCI_B0_BASE, midi_note);
+  SPI_transmit_wrapper(EUSCI_B0_BASE, velocity);
   return (voice_index++);
 }
 
 uint8_t handleNoteOff(struct voice voice_table[NUMBER_OF_VOICES], uint8_t midi_note) {
   MAP_GPIO_toggleOutputOnPin(GPIO_PORT_P2, GPIO_PIN1);
   uint8_t voice_index = remove_note(voice_table, midi_note);
-  MAP_SPI_transmitData(EUSCI_B0_BASE, NOTEOFF);
-  MAP_SPI_transmitData(EUSCI_B0_BASE, voice_index);
-  MAP_SPI_transmitData(EUSCI_B0_BASE, midi_note);
+  SPI_transmit_wrapper(EUSCI_B0_BASE, NOTEOFF);
+  SPI_transmit_wrapper(EUSCI_B0_BASE, voice_index);
+  SPI_transmit_wrapper(EUSCI_B0_BASE, midi_note);
+
   return(voice_index);
 }
 
@@ -105,4 +107,13 @@ void handleCC(uint8_t cc, uint8_t value){
 
 			break;
 	}
+}
+
+uint8_t checkifbyteis(uint8_t byte, uint8_t check){
+    return ((byte >> 4) == (check >> 4));
+}
+
+void SPI_transmit_wrapper(uint32_t moduleInstance, uint_fast8_t transmitData){
+  while((EUSCI_B0->IFG >>1) == 0);  //wait until tx is free
+  MAP_SPI_transmitData(moduleInstance, transmitData);
 }

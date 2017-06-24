@@ -15,7 +15,7 @@ const eUSCI_UART_Config uartConfig =
   0,                                       // UCxBRF = 0
   0,                                      // UCxBRS = 37
   EUSCI_A_UART_NO_PARITY,                  // No Parity
-  EUSCI_A_UART_MSB_FIRST,                  // MSB First
+  EUSCI_A_UART_LSB_FIRST,                  // MSB First
   EUSCI_A_UART_ONE_STOP_BIT,               // One stop bit
   EUSCI_A_UART_MODE,                       // UART mode
   EUSCI_A_UART_OVERSAMPLING_BAUDRATE_GENERATION  // Oversampling
@@ -42,7 +42,7 @@ int main(void)
   MAP_GPIO_setAsOutputPin(GPIO_PORT_P2, GPIO_PIN0 | GPIO_PIN1 | GPIO_PIN2);
 
   //MIDI UART
-  MAP_GPIO_setAsPeripheralModuleFunctionInputPin(GPIO_PORT_P3, GPIO_PIN2 | GPIO_PIN3, GPIO_PRIMARY_MODULE_FUNCTION);
+  MAP_GPIO_setAsPeripheralModuleFunctionInputPin(GPIO_PORT_P3, GPIO_PIN2, GPIO_PRIMARY_MODULE_FUNCTION);
   MAP_UART_initModule(EUSCI_A2_BASE, &uartConfig);
   MAP_UART_enableModule(EUSCI_A2_BASE);
   MAP_UART_enableInterrupt(EUSCI_A2_BASE, EUSCI_A_UART_RECEIVE_INTERRUPT);
@@ -53,7 +53,9 @@ int main(void)
   MAP_SPI_initMaster(EUSCI_B0_BASE, &spiMasterConfig);
   MAP_SPI_enableModule(EUSCI_B0_BASE);
   MAP_SPI_enableInterrupt(EUSCI_B0_BASE, EUSCI_B_SPI_RECEIVE_INTERRUPT);
-  MAP_Interrupt_enableInterrupt(INT_EUSCIB0);
+  MAP_SPI_clearInterruptFlag(EUSCI_B0_BASE, EUSCI_B_SPI_RECEIVE_INTERRUPT);
+
+  //MAP_Interrupt_enableInterrupt(INT_EUSCIB0);
 
   //MAP_Interrupt_enableSleepOnIsrExit();
 
@@ -63,6 +65,7 @@ int main(void)
 //ISR for MIDI UARt. Constructs a 3 byte MIDI message and calls MidiParser
 void EUSCIA2_IRQHandler(void)
 {
+
   MAP_GPIO_toggleOutputOnPin(GPIO_PORT_P2, GPIO_PIN2);
   static uint8_t lastStatusByte;
   static uint8_t byteNumber = 0;  //tracks which of the 3 midi bytes we are processing
@@ -73,10 +76,10 @@ void EUSCIA2_IRQHandler(void)
 
   if(status & EUSCI_A_UART_RECEIVE_INTERRUPT_FLAG){
     uint8_t recievedByte = MAP_UART_receiveData(EUSCI_A2_BASE);
-
+    MAP_UART_transmitData(EUSCI_A2_BASE, recievedByte);
     //Check if in "running status" mode
-		//reset bytecounter upon recieving any command byte
-		if (recievedByte & (1<<8) == 1) { //check if this is a status byte
+		//reset bytecounter upon receiving any command byte
+		if ((recievedByte >> 7) == 1) { //check if this is a status byte
 			lastStatusByte = recievedByte; //we must store it for "running status"
 			byteNumber = 0;
 		}
