@@ -56,10 +56,9 @@ uint8_t handleNoteOn(struct voice voice_table[NUMBER_OF_VOICES], uint8_t voice_i
 uint8_t handleNoteOff(struct voice voice_table[NUMBER_OF_VOICES], uint8_t midi_note) {
   MAP_GPIO_toggleOutputOnPin(GPIO_PORT_P2, GPIO_PIN1);
   uint8_t voice_index = remove_note(voice_table, midi_note);
+
   SPI_transmit_wrapper(EUSCI_B0_BASE, NOTEOFF);
   SPI_transmit_wrapper(EUSCI_B0_BASE, voice_index);
-  SPI_transmit_wrapper(EUSCI_B0_BASE, midi_note);
-
   return(voice_index);
 }
 
