@@ -16,21 +16,21 @@ module dds(
 	reg WrEn;
 	wire [31:0] QReader;
 
-	dptrueram dds_ram(
-	.DataInA(32'b0),	//data in is unused since dataA is a reader port
-	.DataInB(DataInWriter),
-	.AddressA(AddressReader),
-	.AddressB(AddressWriter),
-	.ClockA(clk),
-	.ClockB(clk),
-	.ClockEnA(1'b1),
-	.ClockEnB(1'b1),
-	.WrA(1'b0),
-	.WrB(WrEn),
-	.ResetA(reset),
-	.ResetB(reset),
-	.QA(QReader),
-	.QB()
+	dptrueram (
+		.addr_width(8),
+		.data_width(32)
+	)
+	dds_ram(
+	.dina(32'b0),	//data in is unused since dataA is a reader port
+	.dinb(DataInWriter),
+	.addra(AddressReader),
+	.addrb(AddressWriter),
+	.clka(clk),
+	.clkb(clk),
+	.write_ena(1'b0),
+	.write_enb(WrEn),
+	.douta(QReader),
+	.doutb()
 	);
 
   reg [21:0] temp;

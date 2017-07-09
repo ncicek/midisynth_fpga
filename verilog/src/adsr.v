@@ -2,6 +2,8 @@ module ADSR(
 	input wire clk,
 	input wire reset,
 
+	input wire[7:0] voice_index,
+
 	//parameters
 	input wire [15:0] attack_amt,
 	input wire [15:0] decay_amt,
@@ -9,21 +11,35 @@ module ADSR(
 	input wire [15:0] rel_amt,
 	input wire key_state,	//0=key unpressed, 1=key pressed
 
-	//inputs
 	input wire signed [15:0] input_sample,
 
-
-
-	//state inputs
-	input reg [3:0] state_current; //0=off, 1=attack, 2=decay, 3=release
-	input reg [32:0] envelope_current;
-
-	//state outputs
-	output reg [3:0] state_next;
-	output reg [32:0] envelope_next;
-
-	//outputs
 	output reg signed [15:0] output_sample
+	);
+
+	reg [127:0] DataInWriter = 127'b0;
+	reg [7:0] AddressReader = 8'b0;
+	reg [7:0] AddressWriter = 8'b0;
+	reg WrEn;
+	wire [127:0] QReader;
+
+	reg [3:0] state;
+	reg signed [32:0] envelope;
+
+	dptrueram (
+		.addr_width(8),
+		.data_width(128)
+	)
+	dds_ram(
+	.dina(128'b0),	//data in is unused since dataA is a reader port
+	.dinb(DataInWriter),
+	.addra(AddressReader),
+	.addrb(AddressWriter),
+	.clka(clk),
+	.clkb(clk),
+	.write_ena(1'b0),
+	.write_enb(WrEn),
+	.douta(QReader),
+	.doutb()
 	);
 
 	reg [15:0] attack_amt_reg;
@@ -34,62 +50,71 @@ module ADSR(
 
 	//inernal wire. required to convert unsigned to signed before multiplying
 	wire signed [15:0] envelope_truncated;
-	assign envelope_truncated = envelope_current[32:17];
+	assign envelope_truncated = envelope[32:17];
 
 
 
 	always @(posedge clk or negedge reset) begin
 		if (~reset) begin
-			state_next <= 4'b0;
+			DataInWriter <= 128'b0;
+			AddressReader <= 128'b0;
+			AddressWriter <= 128'b0;
 
-			envelope_next <= 33'd0;
+			attack_amt_reg <= 16'b0;
+			decay_amt_reg <= 16'b0;
+			sustain_amt_reg <= 16'b0;
+			rel_amt_reg <= 16'b0;
+
+			state <= 4'b0;
+
+			envelope <= 33'd0;
 		end
 		else begin
+			AddressReader <= voice_index;
+			state <= QReader[3:0];
+
+
+
 
 			//perform envelope modulation
 			//output upper 16 bits signed
 			output_sample <= (envelope_truncated * input_sample)[31:16];
 
 			//adsr state machine
-			case (state_current)
-
+			case (state)
 				0:	begin //note off
-					envelope_next <= 33'd0;
-
+					envelope <= 33'd0;
 					if (key_state == 1'b1) begin
-
 						//capture adsr params into reg before begining the sequence
 						attack_amt_reg <= attack_amt;
 						decay_amt_reg <= decay_amt;
 						sustain_amt_reg <= sustain_amt;
 						rel_amt_reg <= rel_amt;
 
-						state_next <= 4'd1;
+						state <= 4'd1;
 					end
-
 				end
-
 				1:	begin //attack
 					if (key_state == 1'b0)
-						state_next <= 4'd3;
-					else if (envelope_current < (33'h100000000 - attack_amt_reg))
-						envelope_next <= envelope_current + attack_amt_reg;
+						state <= 4'd3;
+					else if (envelope < (33'h100000000 - attack_amt_reg))
+						envelope <= envelope + attack_amt_reg;
 					else
-						state_next <= 4'd2;
+						state <= 4'd2;
 				end
 
 				2:	begin //decay to sustain level
 					if (key_state == 1'b0)
-						state_next <= 4'd3;
-					else if (envelope_current > (sustain_amt_reg<<16))
-						envelope_next <= envelope_current - decay_amt_reg;
+						state <= 4'd3;
+					else if (envelope > (sustain_amt_reg<<16))
+						envelope <= envelope - decay_amt_reg;
 				end
 
 				3:	begin //release
-					if (envelope_current > 33'd0+rel_amt_reg)
-						envelope_next <= envelope_current - rel_amt_reg;
+					if (envelope > 33'd0+rel_amt_reg)
+						envelope <= envelope - rel_amt_reg;
 					else
-						state_next <= 4'd0;
+						state <= 4'd0;
 				end
 
 			endcase
