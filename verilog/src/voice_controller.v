@@ -1,3 +1,4 @@
+ `default_nettype none
 module voice_controller(
 	input wire clk,
 	input wire reset,
@@ -11,101 +12,184 @@ module voice_controller(
 	output reg signed [23:0] output_sample
 	);
 
+	//DDS////////////////////////////////////////
+	localparam  dds_data_width = 64;
 
-	reg [7:0] voice_counter;
-  reg signed [23:0] mixer_buffer = 24'sd0;
+	wire [dds_data_width-1:0] dds_din;
+	reg [7:0] dds_addr = 8'b0;
+	reg dds_write_en = 1'b0;
+	wire [dds_data_width-1:0] dds_dout;
 
-	reg [31:0] delta_phase;
-	wire [9:0] dds_phase;
-	dds dds(.clk(clk),.reset(reset),.delta_phase(delta_phase),.voice_index(voice_counter),.output_phase(dds_phase));
+	//memory bus bit assignments
+	wire [31:0] dds_dout_current_phase;
+	wire [31:0] dds_dout_delta_phase;
+	assign dds_dout[31:0] = dds_dout_current_phase;
+	assign dds_dout[63:32] = dds_dout_delta_phase;
 
-	reg [3:0] wave_select;
+	reg [31:0] dds_din_current_phase;
+	reg [31:0] dds_din_delta_phase;
+	assign dds_din[31:0] = dds_din_current_phase;
+	assign dds_din[63:32] = dds_din_delta_phase;
+
+	wire [7:0] dds_voice_index_next; 
+	wire [9:0] dds_output_phase;
+	dds dds (.clk(clk),
+	.reset(reset),
+	.voice_index(voice_counter),
+	.dds_din(dds_din),
+	.dds_addr(dds_addr),
+	.dds_write_en(dds_write_en),
+	.dds_dout(dds_dout),
+	.output_phase(dds_output_phase),
+	.voice_index_next(dds_voice_index_next)
+	);
+	////////////////////////////////////////////////
+
+	reg [3:0] wave_select = 4'd1;
+	wire signed [15:0] wavetable_output;
+	wire [7:0] wavetable_voice_index_next;
+	wavetable wavetable(.clk(clk),.reset(reset),.phase(dds_output_phase),.wave_select(wave_select),.sample(wavetable_output),.voice_index(dds_voice_index_next),.voice_index_next(wavetable_voice_index_next));
+
+
+
+
+
+
+	//ADSR////////////////////////////////////////////////////////////////////
+	wire [15:0] attack_amt;
+	wire [15:0] decay_amt;
+	wire [15:0] sustain_amt;
+	wire [15:0] rel_amt;
+
+	localparam adsr_data_width = 38;	//update this with the assignments below
+
+	wire [adsr_data_width-1:0] adsr_din;
+	reg [7:0] adsr_addr = 8'b0;
+	reg adsr_write_en;
+	wire [adsr_data_width-1:0] adsr_dout;
+
+	//data bus assignments
+	wire [32:0] adsr_dout_envelope;
+	wire [3:0] adsr_dout_state;
+	wire adsr_dout_keystate;
+	assign adsr_dout[37:5] = adsr_dout_envelope;
+	assign adsr_dout[4:1] = adsr_dout_state;
+	assign adsr_dout[0] = adsr_dout_keystate;
+
+	reg [32:0] adsr_din_envelope;
+	reg [3:0] adsr_din_state;
+	reg adsr_din_keystate;
+	assign adsr_din[37:5] = adsr_din_envelope;
+	assign adsr_din[4:1] = adsr_din_state;
+	assign adsr_din[0] = adsr_din_keystate;
+
 	wire signed [15:0] voice_chain_output;
-	wavetable wavetable(.clk(clk),.reset(reset),.phase(dds_phase),.wave_select(wave_select),.sample(voice_chain_output));
+
+	ADSR ADSR (.clk(clk),
+	.reset(reset),
+	.voice_index(wavetable_voice_index_next),
+	.input_sample(wavetable_output),
+	.attack_amt(attack_amt),
+	.decay_amt(decay_amt),
+	.sustain_amt(sustain_amt),
+	.rel_amt(rel_amt),
+	.adsr_din(adsr_din),
+	.adsr_addr(adsr_addr),
+	.adsr_write_en(adsr_write_en),
+	.adsr_dout(adsr_dout),
+	.output_sample(voice_chain_output)
+	);
+	////////////////////////////////////////////////////////////////////////
+
 
 	wire [31:0] tuning_code;
 	reg [6:0] midi_byte;
 	tuning_code_lookup tuning_code_lookup(.midi_byte(midi_byte),.tuning_code(tuning_code));
 
-
-	reg [127:0] parameter_ram_data;
-	reg parameter_ram_we;
-	reg [7:0] parameter_ram_address;
-
-
-
-
+	reg [7:0] voice_counter;
+  reg signed [23:0] mixer_buffer = 24'sd0;
 	reg [3:0] state;
 
+	reg [10-1:0] mem_phase [(1<<8)-1:0];//SIM ONLY
 
-	always @(posedge clk or posedge reset) begin
-		if (reset) begin
+	always @(posedge clk or negedge reset) begin
+		if (~reset) begin
 			state <= 4'b0;
 			voice_counter <= 8'd0;
       mixer_buffer <= 24'sd0;
+			midi_byte <= 7'b0;
+			wave_select <= 4'd1;
 		end
 		else begin
+			//defaults do not modify a read data row in ram
+			dds_din_delta_phase <= dds_dout_delta_phase;
+			dds_din_current_phase <= dds_dout_current_phase;
+			adsr_din_state <= adsr_dout_state;
+			adsr_din_keystate <= adsr_dout_keystate;
+			adsr_din_envelope <= adsr_dout_envelope;
+
 			case (state)
-				0:	begin
-					//load an address to the ram
-	        //IDEA this can probably be merged back to back with state 2... gotta think
-	        parameter_ram_we <= 1'b0;
-	        parameter_ram_address <= voice_counter;
-					voice_counter <= voice_counter + 1;
+				0: begin
+					//idle state
 					state <= 4'd1;
+					dds_write_en <= 1'b0;
+					adsr_write_en <= 1'b0;
+
 				end
-
-				1:	begin
-					//ram outputs are now showing the ram contents at that address
-					//load up all the voice parameteres using these ram values
-
-	        //TODO complete this section
-	        //load parameters
-					//delta_phase <= parameter_ram_q[31:0];
-					//wave_select <= parameter_ram_q[35:32];
-					//attack <= parameter_ram_q[4:2];
-					delta_phase <= parameter_ram_q[32:1];
-	        wave_select <= 0;
-					state <= 4'd2;
-				end
-
-				2:	begin
-					//by now the modules should have produced a sample
-					//mix the buffer contents
+				1: begin
+					dds_write_en <= 1'b0;
+					adsr_write_en <= 1'b0;
+					//increment voice counter
+					//check for rollover and handle new spi cmds
+					//JUST FOR SIM
+					mem_phase[voice_counter] <= dds_output_phase;
+					//END OF SIM STUFF
 
 					if (voice_counter == 8'hff) begin
 	          output_sample <= mixer_buffer + voice_chain_output;  //spit out a mixed sample
 	          mixer_buffer <= 24'sd0;   //clear the mixer buffer when voice counter is full to prepare for the next sample
-	      	end
-					else begin
-						mixer_buffer <= mixer_buffer + voice_chain_output;
+						voice_counter <= 8'h0;
+						state <= 4'd2;
 					end
+					else begin
+						voice_counter <= voice_counter + 1;
+						mixer_buffer <= mixer_buffer + voice_chain_output;
+						state <= 4'd0;
+					end
+				end
+
+				//STATES 2 AND 3 PERFORM A READ-MODIFY-WRITE OP ON ALL MEMORIES
+				2: begin
+					//read all rams at the address of the spi cmd recieved
+					dds_write_en <= 1'b0;
+					adsr_write_en <= 1'b0;
+					//TODo need to syncronize these and probably put spi commands into a fifo
+					dds_addr <= SPI_voice_index;
+					adsr_addr <= SPI_voice_index;
 					state <= 4'd3;
 				end
 
-				3:	begin //PARAMETER UPDATER
-					//grabs new parameter updates from the midi controller and puts it into ram
-		      //IDEA: Why not do this every clock cycle? why do we need to wait for the whole voice index range to exhaust?
-		      //maybe use two port ram here?
-
-					parameter_ram_we <= 1'b1;
-
+				3: begin
+					//update and write back all rams
+					dds_write_en <= 1'b1;
+					adsr_write_en <= 1'b1;
 					if (SPI_note_status == 1'b1) begin	//noteon
-						parameter_ram_address <= SPI_voice_index;
-						midi_byte <= SPI_midi_note;
-						parameter_ram_data[0] <= 1'b1;
-						parameter_ram_data[32:1] <= tuning_code;
-
+						midi_byte = SPI_midi_note;	//blocking i think?
+						dds_din_delta_phase <= tuning_code;
+						adsr_din_keystate <= 1'b1;
 					end
 					else if (SPI_note_status == 1'b0) begin	//noteoff
-						parameter_ram_address <= SPI_voice_index;
-						midi_byte <= SPI_midi_note;
-						parameter_ram_data[0] <= 1'b0;
-						parameter_ram_data[32:1] <= tuning_code;
-
+						adsr_din_keystate <= 1'b0;
+						//adsr keyoff
 					end
 
-					state <= 4'd0;
+					//copying this stuff over from state 1
+					//we need to keep voice counter action continous
+					voice_counter <= voice_counter + 1'b1;
+					mixer_buffer <= mixer_buffer + voice_chain_output;
+					mem_phase[voice_counter] <= dds_output_phase;
+
+					state <= 4'd0	;
 				end
 			endcase
 		end

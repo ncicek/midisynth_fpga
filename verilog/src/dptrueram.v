@@ -23,4 +23,11 @@ module dptrueram (dina, write_ena, addra, clka, douta,
       mem[addrb] <= dinb; // Using address bus b.
     doutb <= mem[addrb];
   end
+
+  initial
+
+	begin
+		integer i;
+		for (i=0; i<100000; i=i+1) mem[i] <= 256'b0;
+	end
 endmodule
