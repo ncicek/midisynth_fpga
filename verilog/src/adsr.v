@@ -1,5 +1,7 @@
  `default_nettype none
+
 module ADSR(
+
 	input wire clk,
 	input wire reset,
 
@@ -11,10 +13,10 @@ module ADSR(
 	input wire [15:0] sustain_amt,
 	input wire [15:0] rel_amt,
 
-	input wire[127:0] adsr_din,
+	input wire[data_width-1:0] adsr_din,
 	input wire[7:0] adsr_addr,
 	input wire adsr_write_en,
-	output wire[127:0] adsr_dout,
+	output wire[data_width-1:0] adsr_dout,
 
 	output reg signed [15:0] output_sample
 	);
@@ -69,8 +71,8 @@ module ADSR(
 	reg cycle;
 	//reg key_state_reg;
 
-	always @(posedge clk or negedge reset) begin
-		if (~reset) begin
+	always @(posedge clk) begin
+		if (reset == 1'b1) begin
 			addr <= 8'b0;
 			cycle <= 1'b0;
 		end

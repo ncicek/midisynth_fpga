@@ -1,3 +1,5 @@
+ `default_nettype none
+
 module midi_synth(
 	input wire clk,
 	input wire reset,
@@ -19,9 +21,10 @@ module midi_synth(
 	wire SPI_ready_flag;
 	wire signed [23:0] output_sample;
 
-	spi_controller spi_controller(clk,reset,SPI_sclk,SPI_mosi,SPI_note_status,SPI_voice_index,SPI_midi_note,SPI_velocity,SPI_ready_flag);
-	voice_controller voice_controller(clk,reset,SPI_note_status,SPI_voice_index,SPI_midi_note,SPI_velocity,SPI_ready_flag,output_sample);
+	spi_controller spi_controller(.clk(clk),.reset(reset),.SPI_sclk(SPI_sclk),.SPI_mosi(SPI_mosi),.SPI_note_status(SPI_note_status),.SPI_voice_index(SPI_voice_index),.SPI_midi_note(SPI_midi_note),.SPI_velocity(SPI_velocity),.SPI_ready_flag(SPI_ready_flag));
+	voice_controller voice_controller(.clk(clk),.reset(reset),.SPI_note_status(SPI_note_status),.SPI_voice_index(SPI_voice_index),.SPI_midi_note(SPI_midi_note),.SPI_velocity(SPI_velocity),.SPI_ready_flag(SPI_ready_flag),.output_sample(output_sample));
 
+	assign dac_out = output_sample[23:8] + 16'd32768;
 
 
 

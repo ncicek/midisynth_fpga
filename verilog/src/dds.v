@@ -57,8 +57,8 @@ module dds(
   reg [31:0] temp;
 	reg cycle; //read or write cycle
 
-	always @(posedge clk or negedge reset) begin
-		if (~reset) begin
+	always @(posedge clk) begin
+		if (reset == 1'b1) begin
 			addr <= 8'b0;
 			output_phase <= 10'b0;
 			cycle <= 1'b0;

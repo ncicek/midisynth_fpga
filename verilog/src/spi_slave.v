@@ -43,10 +43,10 @@
 		CHANGE DATA (sdout) @ NEGEDGE SCK
 		read data (sdin) @posedge SCK
 */
-module spi_slave (rstb,ten,tdata,mlb,ss,sck,sdin, sdout,done,rdata);
-  input rstb,ss,sck,sdin,ten,mlb;
-  input [7:0] tdata;
-  output sdout;           //slave out   master in
+module spi_slave (reset,ten,tdata,mlb,ss,sck,sdin, sdout,done,rdata);
+  input wire reset,ss,sck,sdin,ten,mlb;
+  input wire [7:0] tdata;
+  output wire sdout;           //slave out   master in
   output reg done;
   output reg [7:0] rdata;
 
@@ -59,9 +59,9 @@ module spi_slave (rstb,ten,tdata,mlb,ss,sck,sdin, sdout,done,rdata);
 
 
 //read from  sdout
-always @(posedge sck or negedge rstb)
+always @(posedge sck)
   begin
-    if (rstb==0)
+    if (reset==1'b1)
 		begin rreg = 8'h00;  rdata = 8'h00; done = 0; nb = 0; end   //
 	else if (!ss) begin
 			if(mlb==0)  //LSB first, in@msb -> right shift
@@ -69,16 +69,16 @@ always @(posedge sck or negedge rstb)
 			else     //MSB first, in@lsb -> left shift
 				begin rreg ={rreg[6:0],sdin}; end
 		//increment bit count
-			nb=nb+1;
+			nb=nb+4'd1;
 			if(nb!=8) done=0;
 			else  begin rdata=rreg; done=1; nb=0; end
 		end	 //if(!ss)_END  if(nb==8)
   end
 
 //send to  sdout
-always @(negedge sck or negedge rstb)
+always @(negedge sck)
   begin
-	if (rstb==0)
+	if (reset==1'b1)
 		begin treg = 8'hFF; end
 	else begin
 		if(!ss) begin
@@ -90,7 +90,7 @@ always @(negedge sck or negedge rstb)
 					begin treg = {treg[6:0],1'b1}; end
 			end
 		end //!ss
-	 end //rstb
+	 end //reset
   end //always
 
 endmodule

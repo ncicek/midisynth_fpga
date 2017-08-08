@@ -18,12 +18,12 @@ module spi_controller (
   wire [7:0] rdata;
 	wire sdout;
 	wire done;
-	spi_slave spi_slave (reset,1'b1,8'b0,1'b1,1'b0,sclk,mosi,sdout,done,rdata);
+	spi_slave spi_slave (reset,1'b1,8'b0,1'b1,1'b0,SPI_sclk,SPI_mosi,sdout,done,rdata);
 
   reg state;
   reg [1:0] byte_counter;
 
-  always @(posedge clk, posedge reset) begin
+  always @(posedge clk) begin
     if (reset == 1'b1) begin
       SPI_note_status <= 1'b1;
       SPI_voice_index <= 8'b0;
@@ -43,11 +43,11 @@ module spi_controller (
             SPI_ready_flag <= 1'b0;
             if (rdata == NOTEON) begin
               SPI_note_status <= 1'b1;
-              byte_counter <= 3'd1
+              byte_counter <= 3'd1;
             end
             else if (rdata == NOTEOFF) begin
               SPI_note_status <= 1'b0;
-              byte_counter <= //TODO
+              byte_counter <= 3'd1;
             end
   				end
   				1:	//voice_index
@@ -77,7 +77,7 @@ module spi_controller (
           begin
             if (rdata[7] == 1'b0) begin //check that msb of midi_note byte should be 0
               SPI_velocity <= rdata[6:0];
-              byte_counter <= 3'd4;
+              byte_counter <= 3'd0;
               SPI_ready_flag <= 1'b1;
             end
             else

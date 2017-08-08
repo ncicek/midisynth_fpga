@@ -31,7 +31,7 @@ module voice_controller(
 	assign dds_din[31:0] = dds_din_current_phase;
 	assign dds_din[63:32] = dds_din_delta_phase;
 
-	wire [7:0] dds_voice_index_next; 
+	wire [7:0] dds_voice_index_next;
 	wire [9:0] dds_output_phase;
 	dds dds (.clk(clk),
 	.reset(reset),
@@ -56,10 +56,10 @@ module voice_controller(
 
 
 	//ADSR////////////////////////////////////////////////////////////////////
-	wire [15:0] attack_amt;
-	wire [15:0] decay_amt;
-	wire [15:0] sustain_amt;
-	wire [15:0] rel_amt;
+	reg[15:0] attack_amt = 10000;
+	reg [15:0] decay_amt = 10000;
+	reg [15:0] sustain_amt = 10000;
+	reg [15:0] rel_amt = 1000;
 
 	localparam adsr_data_width = 38;	//update this with the assignments below
 
@@ -112,8 +112,8 @@ module voice_controller(
 
 	reg [10-1:0] mem_phase [(1<<8)-1:0];//SIM ONLY
 
-	always @(posedge clk or negedge reset) begin
-		if (~reset) begin
+	always @(posedge clk) begin
+		if (reset == 1'b1) begin
 			state <= 4'b0;
 			voice_counter <= 8'd0;
       mixer_buffer <= 24'sd0;
@@ -152,7 +152,7 @@ module voice_controller(
 						state <= 4'd2;
 					end
 					else begin
-						voice_counter <= voice_counter + 1;
+						voice_counter <= voice_counter + 1'b1;
 						mixer_buffer <= mixer_buffer + voice_chain_output;
 						state <= 4'd0;
 					end
