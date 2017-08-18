@@ -8,7 +8,7 @@ module dds_tb;
 
 	
 	reg SPI_flag;
-	reg [6:0] SPI_midi_note;
+	reg [31:0] SPI_tuning_code;
 	reg [7:0] SPI_voice_index;	 
 	wire [9:0] o_phase	;	
 	
@@ -19,7 +19,7 @@ module dds_tb;
 	dds dds (.i_clk(clk),
 	.i_reset(reset),
 	.i_SPI_flag(SPI_flag),
-	.i_SPI_midi_note(SPI_midi_note),
+	.i_SPI_tuning_code(SPI_tuning_code),
 	.i_SPI_voice_index(SPI_voice_index),
 	.i_voice_index(voice_index),
 	.i_pipeline_state(pipeline_state),
@@ -52,7 +52,8 @@ module dds_tb;
 		#2
 		pipeline_state = 4'd1;
 		#2
-		pipeline_state = 4'd2;
+		pipeline_state = 4'd2; 
+		mem_phase[voice_index]=o_phase;
 	end			 
 	
 	reg send_SPI;
@@ -62,8 +63,8 @@ module dds_tb;
 			
 		if (send_SPI) begin
 			SPI_flag = 1;  
-			SPI_midi_note = 30;
-			SPI_voice_index = 3;	 	
+			SPI_tuning_code = voice_index*100000;
+			SPI_voice_index = voice_index;	 	
 		end	
 		else begin
 			SPI_flag = 0;  	
@@ -77,13 +78,15 @@ module dds_tb;
 		send_SPI = 0;
 		#10 reset = 0;	   
 		
-		#200
-		send_SPI = 1;
-
-		#2
-		send_SPI = 0;
+		
 		
 
+	end	 
+	
+	always @(posedge clk) begin
+		#200
+		send_SPI = 1;	  
+		#2 send_SPI = 0;
 	end
 
 

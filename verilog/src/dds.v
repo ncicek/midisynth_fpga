@@ -9,7 +9,7 @@ module dds(
 	input wire i_reset,	 
 	
 	input wire i_SPI_flag,
-	input wire [6:0] i_SPI_midi_note,
+	input wire [31:0] i_SPI_tuning_code,
 	input wire [7:0] i_SPI_voice_index,
 
 	input wire[7:0] i_voice_index,
@@ -83,13 +83,6 @@ module dds(
 		end
 	end
     
-    
-    wire [31:0] tuning_code; 
-	reg [6:0] midi_byte;
-	//assign midi_byte = i_SPI_midi_note;
-	tuning_code_lookup tuning_code_lookup(.midi_byte(midi_byte),.tuning_code(tuning_code));
-    
-    
     reg [31:0] delta_phase_update = 32'd0;  //buffers incoming delta phase updates for the above state machine to service
     reg [7:0] voice_addr_update = 8'd0;    //buffers incoming voice index updates "
    	reg new_update_available = 1'b0;
@@ -98,19 +91,10 @@ module dds(
 		if (i_reset)
 			new_update_available <= 1'b0;
         else if (i_SPI_flag & ~new_update_available) begin
-            midi_byte = i_SPI_midi_note;    //convert via lookup table
-              	
-            delta_phase_update <= tuning_code;
-            //delta_phase_update <= 32'b1;
+            delta_phase_update <= i_SPI_tuning_code;
             voice_addr_update <= i_SPI_voice_index;	 
 			new_update_available <= 1'b1;
         end   
     end		 
-	
-	always @(i_SPI_midi_note) begin	 
-		
-    end
-
-
 
 endmodule
