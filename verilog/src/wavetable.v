@@ -1,4 +1,4 @@
- `default_nettype none
+ //`default_nettype none
 module wavetable(
 	input wire clk,
 	input wire reset,
@@ -42,6 +42,7 @@ module wavetable(
 			case (cycle)
 				1'b0: begin
 					voice_index_next <= voice_index;
+					cycle <= 1'b1;
 				end
 				1'b1: begin
 					case (wave_select)
@@ -66,6 +67,7 @@ module wavetable(
 						end
 
 					endcase
+					cycle <= 1'b0;
 				end
 			endcase
 		end

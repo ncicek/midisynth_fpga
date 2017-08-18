@@ -1,4 +1,4 @@
- `default_nettype none
+// `default_nettype none
 module voice_controller(
 	input wire clk,
 	input wire reset,
@@ -15,6 +15,8 @@ module voice_controller(
 	//DDS////////////////////////////////////////
 	localparam  dds_data_width = 64;
 
+  reg [7:0] voice_counter;
+
 	wire [dds_data_width-1:0] dds_din;
 	reg [7:0] dds_addr = 8'b0;
 	reg dds_write_en = 1'b0;
@@ -23,11 +25,11 @@ module voice_controller(
 	//memory bus bit assignments
 	wire [31:0] dds_dout_current_phase;
 	wire [31:0] dds_dout_delta_phase;
-	assign dds_dout[31:0] = dds_dout_current_phase;
-	assign dds_dout[63:32] = dds_dout_delta_phase;
+	assign dds_dout_current_phase = dds_dout[31:0];
+	assign dds_dout_delta_phase = dds_dout[63:32];
 
-	reg [31:0] dds_din_current_phase;
-	reg [31:0] dds_din_delta_phase;
+	reg [31:0] dds_din_current_phase = 32'b0;
+	reg [31:0] dds_din_delta_phase = 32'b0;
 	assign dds_din[31:0] = dds_din_current_phase;
 	assign dds_din[63:32] = dds_din_delta_phase;
 
@@ -56,10 +58,10 @@ module voice_controller(
 
 
 	//ADSR////////////////////////////////////////////////////////////////////
-	reg[15:0] attack_amt = 10000;
-	reg [15:0] decay_amt = 10000;
-	reg [15:0] sustain_amt = 10000;
-	reg [15:0] rel_amt = 1000;
+	reg[15:0] attack_amt;
+	reg [15:0] decay_amt;
+	reg [15:0] sustain_amt;
+	reg [15:0] rel_amt;
 
 	localparam adsr_data_width = 38;	//update this with the assignments below
 
@@ -72,13 +74,13 @@ module voice_controller(
 	wire [32:0] adsr_dout_envelope;
 	wire [3:0] adsr_dout_state;
 	wire adsr_dout_keystate;
-	assign adsr_dout[37:5] = adsr_dout_envelope;
-	assign adsr_dout[4:1] = adsr_dout_state;
-	assign adsr_dout[0] = adsr_dout_keystate;
+	assign adsr_dout_envelope = adsr_dout[37:5];
+	assign adsr_dout_state = adsr_dout[4:1];
+	assign adsr_dout_keystate = adsr_dout[0];
 
-	reg [32:0] adsr_din_envelope;
-	reg [3:0] adsr_din_state;
-	reg adsr_din_keystate;
+	reg [32:0] adsr_din_envelope = 33'b0;
+	reg [3:0] adsr_din_state = 4'b0;
+	reg adsr_din_keystate = 1'b0;
 	assign adsr_din[37:5] = adsr_din_envelope;
 	assign adsr_din[4:1] = adsr_din_state;
 	assign adsr_din[0] = adsr_din_keystate;
@@ -106,7 +108,6 @@ module voice_controller(
 	reg [6:0] midi_byte;
 	tuning_code_lookup tuning_code_lookup(.midi_byte(midi_byte),.tuning_code(tuning_code));
 
-	reg [7:0] voice_counter;
   reg signed [23:0] mixer_buffer = 24'sd0;
 	reg [3:0] state;
 
@@ -117,8 +118,24 @@ module voice_controller(
 			state <= 4'b0;
 			voice_counter <= 8'd0;
       mixer_buffer <= 24'sd0;
-			midi_byte <= 7'b0;
+			//midi_byte <= 7'b0;
 			wave_select <= 4'd1;
+
+      dds_addr <= 8'b0;
+      adsr_addr <= 8'b0;
+      dds_write_en <= 1'b0;
+      adsr_write_en <= 1'b0;
+      dds_din_current_phase <= 32'b0;
+      dds_din_delta_phase <= 32'b0;
+      adsr_din_envelope <= 33'b0;
+      adsr_din_state <= 4'b0;
+      adsr_din_keystate <= 1'b0;
+
+      attack_amt <= 16'd10000;
+      decay_amt <= 16'd10000;
+      sustain_amt <= 16'd10000;
+      rel_amt <= 16'd1000;
+
 		end
 		else begin
 			//defaults do not modify a read data row in ram

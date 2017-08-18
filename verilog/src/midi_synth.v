@@ -1,4 +1,4 @@
- `default_nettype none
+ //`default_nettype none
 
 module midi_synth(
 	input wire clk,
@@ -8,10 +8,10 @@ module midi_synth(
 	input wire SPI_mosi,
 	//output wire [7:0] debug_bus,
 
-	output wire [15:0] dac_out,
-	output wire [7:0] leds,
-	output wire [7:0] leds_2,
-	output wire [7:0] leds_3
+	output wire [15:0] dac_out
+	//output wire [7:0] leds,
+	//output wire [7:0] leds_2,
+	//output wire [7:0] leds_3
 	);
 
 	wire SPI_note_status;

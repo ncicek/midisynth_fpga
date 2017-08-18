@@ -1,4 +1,4 @@
- `default_nettype none
+ //`default_nettype none
 
 module ADSR(
 
@@ -13,10 +13,10 @@ module ADSR(
 	input wire [15:0] sustain_amt,
 	input wire [15:0] rel_amt,
 
-	input wire[data_width-1:0] adsr_din,
+	input wire[38-1:0] adsr_din,
 	input wire[7:0] adsr_addr,
 	input wire adsr_write_en,
-	output wire[data_width-1:0] adsr_dout,
+	output wire[38-1:0] adsr_dout,
 
 	output reg signed [15:0] output_sample
 	);
@@ -32,9 +32,9 @@ module ADSR(
 	wire [32:0] dout_envelope;
 	wire [3:0] dout_state;
 	wire dout_keystate;
-	assign dout[37:5] = dout_envelope;
-	assign dout[4:1] = dout_state;
-	assign dout[0] = dout_keystate;
+	assign dout_envelope = dout[37:5];
+	assign dout_state = dout[4:1];
+	assign dout_keystate = dout[0];
 
 	reg [32:0] din_envelope;
 	reg [3:0] din_state;
@@ -46,7 +46,26 @@ module ADSR(
 	//two port paramter ram
 	//port a is voice_controller side
 	//port b is local module side
-	dptrueram #(
+
+  adsr_ram adsr_ram (
+		.DataInA(adsr_din),
+		.WrA(adsr_write_en),
+		.AddressA(adsr_addr),
+		.ClockA(clk),
+		.ClockEnA(1'b1),
+		.QA(adsr_dout),
+		.DataInB(din),
+		.WrB(write_en),
+		.AddressB(addr),
+		.ClockB(clk),
+		.ClockEnB(1'b1),
+		.QB(dout),
+		.ResetA(reset),
+		.ResetB(reset)
+	);
+
+	/*
+	ram #(
 		.addr_width(8),
 		.data_width(data_width)
 	)
@@ -61,7 +80,7 @@ module ADSR(
 		.addrb(addr),
 		.clkb(clk),
 		.doutb(dout)
-	);
+	)/* synthesis syn_ramstyle="block_ram" */
 
 	//inernal wire. required to convert unsigned to signed before multiplying
 	wire signed [15:0] envelope_truncated;
@@ -79,7 +98,7 @@ module ADSR(
 		else begin
 			din_envelope <= dout_envelope;
 			din_state <= dout_state;
-
+			din_keystate <= dout_keystate;
 			case (cycle)
 				0:	begin	//read from mem
 					addr <= voice_index;

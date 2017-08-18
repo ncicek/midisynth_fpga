@@ -1,0 +1,35 @@
+module pmi_ram_dp_true
+  #(parameter pmi_addr_depth_a = 512,
+    parameter pmi_addr_width_a = 9,
+    parameter pmi_data_width_a = 18,
+    parameter pmi_addr_depth_b = 512,
+    parameter pmi_addr_width_b = 9,
+    parameter pmi_data_width_b = 18,
+    parameter pmi_regmode_a = "noreg",
+    parameter pmi_regmode_b = "noreg",
+    parameter pmi_gsr = "disable",
+    parameter pmi_resetmode = "sync",
+    parameter pmi_optimization = "speed",
+    parameter pmi_init_file = "none",
+    parameter pmi_init_file_format = "binary",
+    parameter pmi_write_mode_a = "normal",
+    parameter pmi_write_mode_b = "normal",
+    parameter pmi_family = "XO3L",
+    parameter module_type = "pmi_ram_dp_true")
+
+    (input wire [(pmi_data_width_a-1):0]	DataInA,
+     input wire [(pmi_data_width_b-1):0]	DataInB,
+     input wire [(pmi_addr_width_a-1):0] AddressA,
+     input wire [(pmi_addr_width_b-1):0] AddressB,
+     input  wire ClockA,
+     input  wire ClockB,
+     input  wire ClockEnA,
+     input  wire ClockEnB,
+     input  wire WrA,
+     input  wire WrB,
+     input  wire ResetA,
+     input wire ResetB,
+     output wire [(pmi_data_width_a-1):0]  QA,
+     output wire [(pmi_data_width_b-1):0]  QB)/*synthesis syn_black_box */;
+
+endmodule // pmi_ram_dp_true

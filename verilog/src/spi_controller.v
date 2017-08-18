@@ -29,6 +29,7 @@ module spi_controller (
       SPI_voice_index <= 8'b0;
       SPI_midi_note <= 7'b0;
       SPI_velocity <= 7'b0;
+      SPI_ready_flag <= 1'b0;
 
       state <= 1'b0;
       byte_counter <= 2'd0;

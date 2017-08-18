@@ -1,13 +1,13 @@
- `default_nettype none
+// `default_nettype none
 module dds(
 	input wire clk,
 	input wire reset,
 
 	input wire[7:0] voice_index,
 	//parameters
-	input wire[63:0] dds_din,
-	input wire[7:0] dds_addr,
-	input wire dds_write_en,
+	//input wire[63:0] dds_din,
+	//input wire[7:0] dds_addr,
+	//input wire dds_write_en,
 	output wire[63:0] dds_dout,
 
 	//outputs
@@ -18,6 +18,7 @@ module dds(
 	localparam  data_width = 64;
 
 	wire [data_width-1:0] din;
+  reg [data_width-1:0] mask;
 	reg [7:0] addr = 8'b0;
 	reg write_en = 1'b0;
 	wire [data_width-1:0] dout;
@@ -25,33 +26,74 @@ module dds(
 	//memory bus bit assignments
 	wire [31:0] dout_current_phase;
 	wire [31:0] dout_delta_phase;
-	assign dout[31:0] = dout_current_phase;
-	assign dout[63:32] = dout_delta_phase;
+	//assign dout[31:0] = dout_current_phase;
+	assign dout_current_phase= dout[31:0];
+	//assign dout[63:32] = dout_delta_phase;
+	assign dout_delta_phase = dout[63:32];
 
 	reg [31:0] din_current_phase;
 	reg [31:0] din_delta_phase;
 	assign din[31:0] = din_current_phase;
 	assign din[63:32] = din_delta_phase;
 
-	//two port paramter ram
+  ram #(.data_width(data_width),.(addr_width(8))) dds_ram(.din(din), .mask(mask),.addr(addr), .write_en(write_en), .clk(clk), .dout(dout));
+
+  /*
+  //*two port paramter ram
 	//port a is voice_controller side
 	//port b is local module side
-	dptrueram #(
-		.addr_width(8),
-		.data_width(data_width)
+ 	/dds_ram	dds_ram (
+		.DataInA(dds_din),
+		.WrA(dds_write_en),
+		.AddressA(dds_addr),
+		.ClockA(clk),
+		.ClockEnA(1'b1),
+		.QA(dds_dout),
+		.DataInB(din),
+		.WrB(write_en),
+		.AddressB(addr),
+		.ClockB(clk),
+		.ClockEnB(1'b1),
+		.QB(dout),
+		.ResetA(reset),
+		.ResetB(reset)
 	)
-	dds_ram (
-		.dina(dds_din),
-		.write_ena(dds_write_en),
-		.addra(dds_addr),
-		.clka(clk),
-		.douta(dds_dout),
-		.dinb(din),
-		.write_enb(write_en),
-		.addrb(addr),
-		.clkb(clk),
-		.doutb(dout)
-	);
+
+  pmi_ram_dp_true #(
+    .pmi_addr_depth_a(256),
+    .pmi_addr_width_a(8),
+    .pmi_data_width_a(data_width),
+    .pmi_addr_depth_b(256),
+    .pmi_addr_width_b(8),
+    .pmi_data_width_b(data_width),
+    .pmi_regmode_a("noreg"),
+    .pmi_regmode_b("noreg"),
+    .pmi_gsr("disable"),
+    .pmi_resetmode("sync"),
+    .pmi_optimization("speed"),
+    .pmi_init_file("none"),
+    .pmi_init_file_format("binary"),
+    .pmi_write_mode_a("normal"),
+    .pmi_write_mode_b("normal"),
+    .pmi_family("XO3L"),
+    .module_type("pmi_ram_dp_true)")
+	)
+	dds_ram
+    (.DataInA(dds_din),
+     .DataInB(din),
+     .AddressA(dds_addr),
+     .AddressB(addr),
+     .ClockA(clk),
+     .ClockB(clk),
+     .ClockEnA(1'b1),
+     .ClockEnB(1'b1),
+     .WrA(dds_write_en),
+     .WrB(write_en),
+     .ResetA(reset),
+     .ResetB(reset),
+     .QA(dds_dout),
+     .QB(dout)
+	 )synthesis syn_black_box */
 
 
   reg [31:0] temp;

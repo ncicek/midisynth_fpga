@@ -1,5 +1,5 @@
 //LSE should infer this as true dual port blockram
-module dptrueram (dina, write_ena, addra, clka, douta,
+module ram (dina, write_ena, addra, clka, douta,
   dinb, write_enb, addrb, clkb, doutb);
   parameter addr_width = 8;
   parameter data_width = 8;
@@ -23,11 +23,4 @@ module dptrueram (dina, write_ena, addra, clka, douta,
       mem[addrb] <= dinb; // Using address bus b.
     doutb <= mem[addrb];
   end
-
-  //initial
-
-	//begin
-	//	integer i;
-	//	for (i=0; i<100000; i=i+1) mem[i] <= 256'b0;
-	//end
 endmodule
