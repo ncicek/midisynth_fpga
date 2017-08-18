@@ -1,9 +1,10 @@
-	module tuning_code_lookup(
+`timescale 10ns / 10ns
+module tuning_code_lookup(
 	input wire [6:0] midi_byte,
 	output reg [31:0] tuning_code
 );
 
-	always @(midi_byte) begin
+	always @* begin
 		case(midi_byte)
 			7'd0:	tuning_code = 32'd732;
 			7'd1:	tuning_code = 32'd775;

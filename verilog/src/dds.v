@@ -1,24 +1,28 @@
-// `default_nettype none
+`default_nettype none 
+`timescale 10ns / 10ns
+
+`define	MASK_CURRENT_PHASE 64'h00000000FFFFFFFF
+`define	MASK_DELTA_PHASE 64'hFFFFFFFF00000000
+
 module dds(
-	input wire clk,
-	input wire reset,
+	input wire i_clk,
+	input wire i_reset,	 
+	
+	input wire i_SPI_flag,
+	input wire [6:0] i_SPI_midi_note,
+	input wire [7:0] i_SPI_voice_index,
 
-	input wire[7:0] voice_index,
-	//parameters
-	//input wire[63:0] dds_din,
-	//input wire[7:0] dds_addr,
-	//input wire dds_write_en,
-	output wire[63:0] dds_dout,
+	input wire[7:0] i_voice_index,
+    input wire[1:0] i_pipeline_state,
 
-	//outputs
-	output reg[9:0] output_phase,
-	output reg[7:0] voice_index_next
+	output reg[9:0] o_phase,
+	output reg[7:0] o_voice_index_next
 	);
 
 	localparam  data_width = 64;
 
 	wire [data_width-1:0] din;
-  reg [data_width-1:0] mask;
+    reg [data_width-1:0] mask;
 	reg [7:0] addr = 8'b0;
 	reg write_en = 1'b0;
 	wire [data_width-1:0] dout;
@@ -26,9 +30,7 @@ module dds(
 	//memory bus bit assignments
 	wire [31:0] dout_current_phase;
 	wire [31:0] dout_delta_phase;
-	//assign dout[31:0] = dout_current_phase;
 	assign dout_current_phase= dout[31:0];
-	//assign dout[63:32] = dout_delta_phase;
 	assign dout_delta_phase = dout[63:32];
 
 	reg [31:0] din_current_phase;
@@ -36,111 +38,78 @@ module dds(
 	assign din[31:0] = din_current_phase;
 	assign din[63:32] = din_delta_phase;
 
-  ram #(.data_width(data_width),.(addr_width(8))) dds_ram(.din(din), .mask(mask),.addr(addr), .write_en(write_en), .clk(clk), .dout(dout));
+    ram #(.addr_width(8),.data_width(data_width))
+	dds_ram(.din(din), .mask(mask),.addr(addr), .write_en(write_en), .clk(i_clk), .dout(dout));
+    
+    
+    
+    reg [31:0] temp;
 
-  /*
-  //*two port paramter ram
-	//port a is voice_controller side
-	//port b is local module side
- 	/dds_ram	dds_ram (
-		.DataInA(dds_din),
-		.WrA(dds_write_en),
-		.AddressA(dds_addr),
-		.ClockA(clk),
-		.ClockEnA(1'b1),
-		.QA(dds_dout),
-		.DataInB(din),
-		.WrB(write_en),
-		.AddressB(addr),
-		.ClockB(clk),
-		.ClockEnB(1'b1),
-		.QB(dout),
-		.ResetA(reset),
-		.ResetB(reset)
-	)
-
-  pmi_ram_dp_true #(
-    .pmi_addr_depth_a(256),
-    .pmi_addr_width_a(8),
-    .pmi_data_width_a(data_width),
-    .pmi_addr_depth_b(256),
-    .pmi_addr_width_b(8),
-    .pmi_data_width_b(data_width),
-    .pmi_regmode_a("noreg"),
-    .pmi_regmode_b("noreg"),
-    .pmi_gsr("disable"),
-    .pmi_resetmode("sync"),
-    .pmi_optimization("speed"),
-    .pmi_init_file("none"),
-    .pmi_init_file_format("binary"),
-    .pmi_write_mode_a("normal"),
-    .pmi_write_mode_b("normal"),
-    .pmi_family("XO3L"),
-    .module_type("pmi_ram_dp_true)")
-	)
-	dds_ram
-    (.DataInA(dds_din),
-     .DataInB(din),
-     .AddressA(dds_addr),
-     .AddressB(addr),
-     .ClockA(clk),
-     .ClockB(clk),
-     .ClockEnA(1'b1),
-     .ClockEnB(1'b1),
-     .WrA(dds_write_en),
-     .WrB(write_en),
-     .ResetA(reset),
-     .ResetB(reset),
-     .QA(dds_dout),
-     .QB(dout)
-	 )synthesis syn_black_box */
-
-
-  reg [31:0] temp;
-	reg cycle; //read or write cycle
-
-	always @(posedge clk) begin
-		if (reset == 1'b1) begin
+	always @(posedge i_clk) begin
+		if (i_reset == 1'b1) begin
 			addr <= 8'b0;
-			output_phase <= 10'b0;
-			cycle <= 1'b0;
+			o_phase <= 10'b0;
 			write_en <= 1'b0;
 		end
 		else begin
-			//default do not modify ram contents
-			//in state machine below, some of these will be overidden as part of the RMW sequnece
-			din_current_phase <= dout_current_phase;
-			din_delta_phase <= dout_delta_phase;
-			case (cycle)
+			case (i_pipeline_state)
 				0:	begin	//read from mem
-					addr <= voice_index;
-					voice_index_next <= voice_index;
+					addr <= i_voice_index;
+					o_voice_index_next <= i_voice_index;
 					write_en <= 1'b0;
-
-					cycle <= 1'b1;
 				end
 
 				1:	begin //compute and write back to mem
-					//addr <= voice_index;
 					write_en <= 1'b1;
 
-					//delta_phase = dout[63:32];
 					//verilog makes me want to cry :_(
 					temp = dout_current_phase + dout_delta_phase;
-					output_phase <= temp[31:22];
-
+					o_phase <= temp[31:22];
+                    mask <= `MASK_CURRENT_PHASE;
 					din_current_phase <= temp;
-					cycle <= 1'b0;
 				end
 
-				2: begin
-					//TODo
-					//stop state
-					//halts ram writes to allow voice controller to write a parameter
+				2: begin    //update ram
+                    write_en <= 1'b1;
+                    if (new_update_available) begin
+                        new_update_available <= 1'b0; //clear the bit
+                        addr <= voice_addr_update;
+                        mask <= `MASK_DELTA_PHASE;
+                        din_delta_phase <= delta_phase_update;
+                    end
 				end
+                    
 			endcase
 		end
 	end
+    
+    
+    wire [31:0] tuning_code; 
+	reg [6:0] midi_byte;
+	//assign midi_byte = i_SPI_midi_note;
+	tuning_code_lookup tuning_code_lookup(.midi_byte(midi_byte),.tuning_code(tuning_code));
+    
+    
+    reg [31:0] delta_phase_update = 32'd0;  //buffers incoming delta phase updates for the above state machine to service
+    reg [7:0] voice_addr_update = 8'd0;    //buffers incoming voice index updates "
+   	reg new_update_available = 1'b0;
+    //check every clock edge if a new update is avaible and buffer it
+    always @(posedge i_clk) begin	 
+		if (i_reset)
+			new_update_available <= 1'b0;
+        else if (i_SPI_flag & ~new_update_available) begin
+            midi_byte = i_SPI_midi_note;    //convert via lookup table
+              	
+            delta_phase_update <= tuning_code;
+            //delta_phase_update <= 32'b1;
+            voice_addr_update <= i_SPI_voice_index;	 
+			new_update_available <= 1'b1;
+        end   
+    end		 
+	
+	always @(i_SPI_midi_note) begin	 
+		
+    end
 
 
 
