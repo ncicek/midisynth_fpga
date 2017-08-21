@@ -27,7 +27,7 @@ module spi_controller (
 	if (reset == 1'b1) begin
 	  SPI_note_status <= 1'b1;
 	  SPI_voice_index <= 8'b0;
-	  SPI_midi_note <= 7'b0;
+	  SPI_tuning_code <= 7'b0;
 	  SPI_velocity <= 7'b0;
 	  SPI_ready_flag <= 1'b0;
 

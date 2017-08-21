@@ -1,29 +1,35 @@
- //`default_nettype none
+`default_nettype none
+
+`define	MASK_KEYSTATE 38'b1
+`define	MASK_STATE 38'b11110
+`define	MASK_ENVELOPE 38'b11111111111111111111111111111111100000
+
 
 module ADSR(
 
-	input wire clk,
-	input wire reset,
+	input wire i_clk,
+	input wire i_reset,
 
-	input wire[7:0] voice_index,
-	input wire signed [15:0] input_sample,
+	input wire i_SPI_flag,
+	input wire i_SPI_note_status,
+	input wire [7:0] i_SPI_voice_index,
 
-	input wire [15:0] attack_amt,
-	input wire [15:0] decay_amt,
-	input wire [15:0] sustain_amt,
-	input wire [15:0] rel_amt,
+	input wire[7:0] i_voice_index,
+	input wire[1:0] i_pipeline_state,
+	input wire signed [15:0] i_sample,
 
-	input wire[38-1:0] adsr_din,
-	input wire[7:0] adsr_addr,
-	input wire adsr_write_en,
-	output wire[38-1:0] adsr_dout,
+	input wire [15:0] i_attack_amt,
+	input wire [15:0] i_decay_amt,
+	input wire [15:0] i_sustain_amt,
+	input wire [15:0] i_rel_amt,
 
-	output reg signed [15:0] output_sample
+	output reg signed [15:0] o_sample
 	);
 
 	localparam data_width = 38;	//update this with the assignments below
 
 	wire [data_width-1:0] din;
+	reg [data_width-1:0] mask;
 	reg [7:0] addr = 8'b0;
 	reg write_en;
 	wire [data_width-1:0] dout;
@@ -43,115 +49,117 @@ module ADSR(
 	assign din[4:1] = din_state;
 	assign din[0] = din_keystate;
 
-	//two port paramter ram
-	//port a is voice_controller side
-	//port b is local module side
+	ram #(.addr_width(8),.data_width(data_width))
+	adsr_ram(.din(din), .mask(mask),.addr(addr), .write_en(write_en), .clk(i_clk), .dout(dout));
 
-  adsr_ram adsr_ram (
-		.DataInA(adsr_din),
-		.WrA(adsr_write_en),
-		.AddressA(adsr_addr),
-		.ClockA(clk),
-		.ClockEnA(1'b1),
-		.QA(adsr_dout),
-		.DataInB(din),
-		.WrB(write_en),
-		.AddressB(addr),
-		.ClockB(clk),
-		.ClockEnB(1'b1),
-		.QB(dout),
-		.ResetA(reset),
-		.ResetB(reset)
-	);
-
-	/*
-	ram #(
-		.addr_width(8),
-		.data_width(data_width)
-	)
-	adsr_ram (
-		.dina(adsr_din),
-		.write_ena(adsr_write_en),
-		.addra(adsr_addr),
-		.clka(clk),
-		.douta(adsr_dout),
-		.dinb(din),
-		.write_enb(write_en),
-		.addrb(addr),
-		.clkb(clk),
-		.doutb(dout)
-	)/* synthesis syn_ramstyle="block_ram" */
 
 	//inernal wire. required to convert unsigned to signed before multiplying
 	wire signed [15:0] envelope_truncated;
 	assign envelope_truncated = dout_envelope[32:17];	//should i use din or dout envelope here?
 
+	reg new_update_available;
+	reg keystate_update; //buffers incoming delta phase updates for the above state machine to service
+	reg [7:0] voice_addr_update;    //buffers incoming voice index updates "
 	reg signed [31:0] output_temp;
-	reg cycle;
 	//reg key_state_reg;
 
-	always @(posedge clk) begin
-		if (reset == 1'b1) begin
+	always @(posedge i_clk) begin
+		if (i_reset == 1'b1) begin
 			addr <= 8'b0;
-			cycle <= 1'b0;
 		end
 		else begin
-			din_envelope <= dout_envelope;
-			din_state <= dout_state;
-			din_keystate <= dout_keystate;
-			case (cycle)
+			//din_envelope <= dout_envelope;
+			//din_state <= dout_state;
+			//din_keystate <= dout_keystate;
+			case (i_pipeline_state)
 				0:	begin	//read from mem
-					addr <= voice_index;
+					addr <= i_voice_index;
 					write_en <= 1'b0;
-					cycle <= 1'b1;
 				end
 				1:	begin //compute and write back to mem
 					write_en <= 1'b1;
 
 					//perform envelope modulation
 					//output upper 16 bits signed
-					output_temp = envelope_truncated * input_sample;
-					output_sample <= output_temp[31:16];
+					output_temp = envelope_truncated * i_sample;
+					o_sample <= output_temp[31:16];
 
 					//adsr state machine
 					case (dout_state) // state
 						0:	begin //note off
-							din_envelope <= 33'd0;	//envelope
-							if (dout_keystate == 1'b1) begin	//keystate
+							if (dout_keystate == 1'b1) begin
+								mask <= (`MASK_ENVELOPE|`MASK_STATE);
 								din_state <= 4'd1;	//state
+								din_envelope <= 33'd0;
+							end
+							else begin
+								mask <= `MASK_ENVELOPE;
+								din_envelope <= 33'd0;
 							end
 						end
 						1:	begin //attack
-							if (dout_keystate == 1'b0) //keystate
+							if (dout_keystate == 1'b0) begin
+								mask <= `MASK_STATE;
 								din_state <= 4'd3;	//state
-							else if (dout_envelope < (33'h100000000 - attack_amt))//envelope less than 10000-atackreg
-								din_envelope <= dout_envelope + attack_amt;
-							else
+							end
+							else if (dout_envelope < (33'h100000000 - i_attack_amt)) begin
+								mask <= `MASK_ENVELOPE;
+								din_envelope <= dout_envelope + i_attack_amt;
+							end
+							else begin
+								mask <= `MASK_STATE;
 								din_state <= 4'd2;//state
+							end
 						end
 
 						2:	begin //decay to sustain level
-							if (dout_keystate == 1'b0)
+							if (dout_keystate == 1'b0) begin
+								mask <= `MASK_STATE;
 								din_state <= 4'd3;
-							else if (dout_envelope > (sustain_amt<<16))
-								din_envelope <= dout_envelope - decay_amt;
+							end
+							else if (dout_envelope > (i_sustain_amt<<16)) begin
+								mask <= `MASK_ENVELOPE;
+								din_envelope <= dout_envelope - i_decay_amt;
+							end
 						end
 
 						3:	begin //release
-							if (dout_envelope > 33'd0 + rel_amt)
-								din_envelope <= dout_envelope - rel_amt;
-							else
+							if (dout_envelope > 33'd0 + i_rel_amt) begin
+								mask <= `MASK_ENVELOPE;
+								din_envelope <= dout_envelope - i_rel_amt;
+							end
+							else begin
+								mask <= `MASK_STATE;
 								din_state <= 4'd0;
+							end
 						end
 					endcase
-
-					cycle <= 1'b0;
+				end
+				2: begin    //update ram
+          write_en <= 1'b1;
+          if (new_update_available) begin
+              new_update_available <= 1'b0; //clear the bit
+              addr <= voice_addr_update;
+              mask <= `MASK_KEYSTATE;
+              din_keystate <= keystate_update;
+          end
 				end
 			endcase
 
 		end
 
 	end
+
+	//check every clock edge if a new update is avaible and buffer it
+  always @(posedge i_clk) begin
+		if (i_reset)
+			new_update_available <= 1'b0;
+    else if (i_SPI_flag & ~new_update_available) begin
+      keystate_update <= i_SPI_note_status;
+      voice_addr_update <= i_SPI_voice_index;
+			new_update_available <= 1'b1;
+    end
+  end
 
 
 endmodule

@@ -1,9 +1,9 @@
-module ram (din, addr, write_en, clk, dout);
+module ram (din, mask, addr, write_en, clk, dout);
   parameter addr_width = 8;
   parameter data_width = 8;
   input [addr_width-1:0] addr;
   input [data_width-1:0] din;
-  input [data_width=1:0] mask;
+  input [data_width-1:0] mask;
   input wire write_en;
   input wire clk;
   output wire [data_width-1:0] dout;
@@ -17,10 +17,11 @@ module ram (din, addr, write_en, clk, dout);
   end
   assign dout = mem[addr];
 
+integer i;
   initial
 //
 	begin
-		integer i;
+		
 		for (i=0; i<100000; i=i+1) mem[i] <= 128'b0;
 	end
 endmodule
