@@ -7,7 +7,7 @@ module voice_controller(
 	input wire [7:0] i_SPI_voice_index,
 	input wire [31:0] i_SPI_tuning_code,
 	input wire [6:0] i_SPI_velocity,
-	input wire i_SPI_ready_flag,
+	input wire i_SPI_flag,
 
 	output reg signed [23:0] o_mixed_sample
 	);
@@ -66,22 +66,19 @@ module voice_controller(
   );
 	////////////////////////////////////////////////////////////////////////
 
-
-
   reg signed [23:0] mixer_buffer;
-	reg [1:0] pipeline_state;
 
-	always @(posedge clk) begin
-		if (reset) begin
+	always @(posedge i_clk) begin
+		if (i_reset) begin
 			pipeline_state <= 2'b0;
-			voice_counter <= 8'd0;
+			voice_index <= 8'd0;
       mixer_buffer <= 24'sd0;
 			wave_select <= 4'd1;
 
       attack_amt <= 16'd10000;
       decay_amt <= 16'd10000;
       sustain_amt <= 16'd10000;
-      rel_amt <= 16'd1000;
+      rel_amt <= 16'd10000;
 			o_mixed_sample <= 24'sd0;
 		end
 		else begin
@@ -92,8 +89,8 @@ module voice_controller(
 		end
 	end
 
-	always @(posedge clk) begin
-		if (~reset) begin
+	always @(posedge i_clk) begin
+		if (~i_reset) begin
 			if (pipeline_state == 2'd0)	//incrementor
 				voice_index <= voice_index + 1;
 

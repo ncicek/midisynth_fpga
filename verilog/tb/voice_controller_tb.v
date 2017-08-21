@@ -11,12 +11,12 @@ module voice_controller_tb;
 
   voice_controller voice_controller(
   	.i_clk(clk),
-  	.i_reset(reset),  
+  	.i_reset(reset),
   	.i_SPI_note_status(SPI_note_status),
   	.i_SPI_voice_index(SPI_voice_index),
   	.i_SPI_tuning_code(SPI_tuning_code),
   	.i_SPI_velocity(),
-  	.i_SPI_ready_flag(SPI_flag),
+  	.i_SPI_flag(SPI_flag),
   	.o_mixed_sample(mixed_sample)
   	);
 
@@ -33,24 +33,38 @@ module voice_controller_tb;
     //$dumplimit(1000000000);
 		clk = 1;
 		reset = 1;
-		send_SPI = 0;
 		#10 reset = 0;
 
 
-    #4
+    #4//start note
     SPI_flag = 1;
     SPI_tuning_code = 20*1000000;
     SPI_voice_index = 5;
     SPI_note_status = 1'b1;
-    #2
+		#2
     SPI_flag = 0;
-    #10000000
+
+    #10000000 //stop note
     SPI_flag = 1;
     SPI_voice_index = 5;
     SPI_note_status = 1'b0;
     #2
     SPI_flag = 0;
 
+		#20//start note
+		SPI_flag = 1;
+    SPI_tuning_code = 60*1000000;
+    SPI_voice_index = 1;
+    SPI_note_status = 1'b1;
+    #2
+    SPI_flag = 0;
+
+    #10000000 //stop note
+    SPI_flag = 1;
+    SPI_voice_index = 1;
+    SPI_note_status = 1'b0;
+    #2
+    SPI_flag = 0;
 
     //#100000000 $finish;
 
