@@ -1,4 +1,4 @@
-`default_nettype none
+//`default_nettype none
 `timescale 10ns / 10ns
 
 `define	MASK_CURRENT_PHASE 64'h00000000FFFFFFFF
@@ -55,13 +55,13 @@ module dds(
 		end
 		else begin
 			case (i_pipeline_state)
-				0:	begin	//read from mem
+				2'd0:	begin	//read from mem
 					addr <= i_voice_index;
 					o_voice_index_next <= i_voice_index;
 					write_en <= 1'b0;
 				end
 
-				1:	begin //compute and write back to mem
+				2'd1:	begin //compute and write back to mem
 					write_en <= 1'b1;
 
 					//verilog makes me want to cry :_(
@@ -71,10 +71,10 @@ module dds(
 					din_current_phase <= temp;
 				end
 
-				2: begin    //update ram
+				2'd2: begin    //update ram
           write_en <= 1'b1;
           if (new_update_available) begin
-              new_update_available <= 1'b0; //clear the bit
+              //new_update_ack <= 1'b0; //clear the bit
               addr <= voice_addr_update;
               mask <= `MASK_DELTA_PHASE;
               din_delta_phase <= delta_phase_update;
@@ -87,13 +87,16 @@ module dds(
 
   //check every clock edge if a new update is avaible and buffer it
   always @(posedge i_clk) begin
-	if (i_reset)
-		new_update_available <= 1'b0;
-      else if (i_SPI_flag & ~new_update_available) begin
-          delta_phase_update <= i_SPI_tuning_code;
-          voice_addr_update <= i_SPI_voice_index;
-		new_update_available <= 1'b1;
-      end
+		if (i_reset)
+			new_update_available <= 1'b0;
+		else if (i_SPI_flag & ~new_update_available) begin
+		  delta_phase_update <= i_SPI_tuning_code;
+		  voice_addr_update <= i_SPI_voice_index;
+			new_update_available <= 1'b1;
+		end
+		else if (new_update_available & i_pipeline_state==2'd2) //state2 is when we can reset
+			new_update_available <= 1'b0;
+
   end
 
 endmodule

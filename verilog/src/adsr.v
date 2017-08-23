@@ -1,4 +1,4 @@
-`default_nettype none
+//`default_nettype none
 
 `define	MASK_KEYSTATE 38'b1
 `define	MASK_STATE 38'b11110
@@ -138,7 +138,7 @@ module ADSR(
 				2: begin    //update ram
           write_en <= 1'b1;
           if (new_update_available) begin
-              new_update_available <= 1'b0; //clear the bit
+              //new_update_available <= 1'b0; //clear the bit
               addr <= voice_addr_update;
               mask <= `MASK_KEYSTATE;
               din_keystate <= keystate_update;
@@ -159,6 +159,8 @@ module ADSR(
       voice_addr_update <= i_SPI_voice_index;
 			new_update_available <= 1'b1;
     end
+		else if (new_update_available & i_pipeline_state==2'd2) //state2 is when we can reset
+			new_update_available <= 1'b0;
   end
 
 

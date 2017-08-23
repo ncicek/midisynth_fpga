@@ -1,4 +1,4 @@
- `default_nettype none
+ //`default_nettype none
 module wavetable(
 	input wire i_clk,
 	input wire i_reset,
@@ -67,6 +67,7 @@ module wavetable(
 			end
 
 			2: begin    //update ram
+        //do nothing
         /*write_en <= 1'b1;
         if (new_update_available) begin
             new_update_available <= 1'b0; //clear the bit

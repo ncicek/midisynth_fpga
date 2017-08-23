@@ -19,9 +19,8 @@ module ram (din, mask, addr, write_en, clk, dout);
 
 integer i;
   initial
-//
 	begin
-		
-		for (i=0; i<100000; i=i+1) mem[i] <= 128'b0;
+
+		for (i=0; i<(1<<addr_width); i=i+1) mem[i] <= {data_width{1'b0}};
 	end
 endmodule

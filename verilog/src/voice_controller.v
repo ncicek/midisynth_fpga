@@ -1,4 +1,4 @@
-`default_nettype none
+//`default_nettype none
 module voice_controller(
 	input wire i_clk,
 	input wire i_reset,
@@ -66,20 +66,18 @@ module voice_controller(
   );
 	////////////////////////////////////////////////////////////////////////
 
-  reg signed [23:0] mixer_buffer;
-
 	always @(posedge i_clk) begin
 		if (i_reset) begin
 			pipeline_state <= 2'b0;
-			voice_index <= 8'd0;
-      mixer_buffer <= 24'sd0;
+
+
 			wave_select <= 4'd1;
 
       attack_amt <= 16'd10000;
       decay_amt <= 16'd10000;
       sustain_amt <= 16'd10000;
       rel_amt <= 16'd10000;
-			o_mixed_sample <= 24'sd0;
+
 		end
 		else begin
 			if (pipeline_state < 2'd3)
@@ -89,10 +87,18 @@ module voice_controller(
 		end
 	end
 
+
+	reg signed [23:0] mixer_buffer;
+
 	always @(posedge i_clk) begin
-		if (~i_reset) begin
+		if (i_reset) begin
+			o_mixed_sample <= 24'sd0;
+			mixer_buffer <= 24'sd0;
+			voice_index <= 8'd0;
+		end
+		else begin
 			if (pipeline_state == 2'd0)	//incrementor
-				voice_index <= voice_index + 1;
+				voice_index <= voice_index + 1'b1;
 
 			else if (pipeline_state == 2'd2) begin	//mixer
 				if (voice_index == 8'hff) begin
