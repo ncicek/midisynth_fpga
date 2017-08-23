@@ -46,37 +46,35 @@ module voice_controller(
 	wire signed [15:0] adsr_output;
 
 	ADSR ADSR (
-    .i_clk(i_clk),
-    .i_reset(i_reset),
+		.i_clk(i_clk),
+		.i_reset(i_reset),
 
-    .i_SPI_flag(i_SPI_flag),
-    .i_SPI_note_status(i_SPI_note_status),
-    .i_SPI_voice_index(i_SPI_voice_index),
+		.i_SPI_flag(i_SPI_flag),
+		.i_SPI_note_status(i_SPI_note_status),
+		.i_SPI_voice_index(i_SPI_voice_index),
 
-    .i_voice_index(wavetable_voice_index_next),
-    .i_pipeline_state(pipeline_state),
-    .i_sample(wavetable_output),
+		.i_voice_index(wavetable_voice_index_next),
+		.i_pipeline_state(pipeline_state),
+		.i_sample(wavetable_output),
 
-    .i_attack_amt(attack_amt),
-    .i_decay_amt(decay_amt),
-    .i_sustain_amt(sustain_amt),
-    .i_rel_amt(rel_amt),
+		.i_attack_amt(attack_amt),
+		.i_decay_amt(decay_amt),
+		.i_sustain_amt(sustain_amt),
+		.i_rel_amt(rel_amt),
 
-    .o_sample(adsr_output)
-  );
+		.o_sample(adsr_output)
+	);
 	////////////////////////////////////////////////////////////////////////
 
 	always @(posedge i_clk) begin
 		if (i_reset) begin
 			pipeline_state <= 2'b0;
-
-
 			wave_select <= 4'd1;
 
-      attack_amt <= 16'd10000;
-      decay_amt <= 16'd10000;
-      sustain_amt <= 16'd10000;
-      rel_amt <= 16'd10000;
+			attack_amt <= 16'd10000;
+			decay_amt <= 16'd10000;
+			sustain_amt <= 16'd10000;
+			rel_amt <= 16'd10000;
 
 		end
 		else begin
@@ -102,12 +100,12 @@ module voice_controller(
 
 			else if (pipeline_state == 2'd2) begin	//mixer
 				if (voice_index == 8'hff) begin
-		      o_mixed_sample <= mixer_buffer + adsr_output;  //spit out a mixed sample
-		      mixer_buffer <= 24'sd0;   //clear the mixer buffer when voice counter is full to prepare for the next sample
-		    end
-		    else begin
-		      mixer_buffer <= mixer_buffer + adsr_output;
-		    end
+					o_mixed_sample <= mixer_buffer + adsr_output;  //spit out a mixed sample
+					mixer_buffer <= 24'sd0;   //clear the mixer buffer when voice counter is full to prepare for the next sample
+				end
+				else begin
+					mixer_buffer <= mixer_buffer + adsr_output;
+				end
 			end
 		end
 	end

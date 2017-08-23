@@ -4,7 +4,7 @@ module wavetable(
 	input wire i_reset,
 
 	input wire [9:0] i_phase,
-  input wire [3:0] i_wave_select,
+	input wire [3:0] i_wave_select,
 	input wire [7:0] i_voice_index,
 	input wire [1:0] i_pipeline_state,
 
@@ -17,21 +17,21 @@ module wavetable(
 	wire signed [15:0] square_sample;
 	wire signed [15:0] sine_sample;
 
-  //sincos sinetable
-  //(
-  //.Clock (clk),
-  //.ClkEn (1'b1),
-  //.Reset(reset),
-  //.Theta(phase),	//10 bit input
-  //.Sine(sine_sample)	//16 bit signed output
-  //);
+	//sincos sinetable
+	//(
+	//.Clock (clk),
+	//.ClkEn (1'b1),
+	//.Reset(reset),
+	//.Theta(phase),	//10 bit input
+	//.Sine(sine_sample)	//16 bit signed output
+	//);
 
-  square_wave square_wave
-  (
-  .clk(i_clk),
-  .theta(i_phase),
-  .square_sample(square_sample)
-  );
+	square_wave square_wave
+	(
+	.clk(i_clk),
+	.theta(i_phase),
+	.square_sample(square_sample)
+	);
 
 	always @(posedge i_clk) begin
 		case (i_pipeline_state)
@@ -67,14 +67,14 @@ module wavetable(
 			end
 
 			2: begin    //update ram
-        //do nothing
-        /*write_en <= 1'b1;
-        if (new_update_available) begin
-            new_update_available <= 1'b0; //clear the bit
-            addr <= voice_addr_update;
-            mask <= `MASK_DELTA_PHASE;
-            din_delta_phase <= delta_phase_update;
-        end*/
+				//do nothing
+				/*write_en <= 1'b1;
+				if (new_update_available) begin
+						new_update_available <= 1'b0; //clear the bit
+						addr <= voice_addr_update;
+						mask <= `MASK_DELTA_PHASE;
+						din_delta_phase <= delta_phase_update;
+				end*/
 			end
 
 		endcase

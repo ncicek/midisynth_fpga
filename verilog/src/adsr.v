@@ -136,13 +136,13 @@ module ADSR(
 					endcase
 				end
 				2: begin    //update ram
-          write_en <= 1'b1;
-          if (new_update_available) begin
-              //new_update_available <= 1'b0; //clear the bit
-              addr <= voice_addr_update;
-              mask <= `MASK_KEYSTATE;
-              din_keystate <= keystate_update;
-          end
+					write_en <= 1'b1;
+					if (new_update_available) begin
+							//new_update_available <= 1'b0; //clear the bit
+							addr <= voice_addr_update;
+							mask <= `MASK_KEYSTATE;
+							din_keystate <= keystate_update;
+					end
 				end
 			endcase
 
@@ -151,17 +151,17 @@ module ADSR(
 	end
 
 	//check every clock edge if a new update is avaible and buffer it
-  always @(posedge i_clk) begin
+	always @(posedge i_clk) begin
 		if (i_reset)
 			new_update_available <= 1'b0;
-    else if (i_SPI_flag & ~new_update_available) begin
-      keystate_update <= i_SPI_note_status;
-      voice_addr_update <= i_SPI_voice_index;
+		else if (i_SPI_flag & ~new_update_available) begin
+			keystate_update <= i_SPI_note_status;
+			voice_addr_update <= i_SPI_voice_index;
 			new_update_available <= 1'b1;
-    end
+		end
 		else if (new_update_available & i_pipeline_state==2'd2) //state2 is when we can reset
 			new_update_available <= 1'b0;
-  end
+	end
 
 
 endmodule
