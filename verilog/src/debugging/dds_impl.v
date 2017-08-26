@@ -1,4 +1,4 @@
-`default_nettype none
+//`default_nettype none
 module top_dds(
 	input wire ref_clk,
 	input wire button,
@@ -7,7 +7,7 @@ module top_dds(
 
 	output reg [15:0] dac_out,
 	output wire [7:0] leds_0_b,
-	output wire [7:0] leds_1_b,
+	output reg [7:0] leds_1_b,
 	output reg [7:0] leds_2_b
 	);
 
@@ -59,17 +59,22 @@ module top_dds(
 	reg [9:0] phase_mem [7:0];
 
 	always @(posedge ref_clk) begin	//phase grab into mem
-		if (pipeline_state == 2'd1) begin
-			phase_mem[voice_index-2]<= o_phase;
+		if (pipeline_state == 2'd2) begin
+			phase_mem[voice_index-1]<= o_phase; //whatever is on the output right now is voice_index 2 cycles ago
 		end
 	end
 
 	always @(posedge ref_clk) begin	//output phase 5
-		if (voice_index == 8'd5) begin
-			//dac_out[15:6] <= phase_mem[5];
-			//dac_out[5:0] <= 6'b0;
-			dac_out <= ledcounter;
+		if (voice_index == 8'd6 & pipeline_state == 2'd3) begin
+			dac_out[15:6] <= phase_mem[5];
+			dac_out[5:0] <= 6'b0;
 		end
+		/*if (pipeline_state == 2'd0) begin
+			dac_out[15:6] <= phase_mem[5];
+			dac_out[5:0] <= 6'b0;
+		end*/
+		//dac_out[5:0] <= 6'b0;
+		//dac_out[15:14] <= pipeline_state;
 	end
 
 	reg [23:0] counter;
@@ -89,13 +94,20 @@ module top_dds(
 		end
 	end
 
+	always @(posedge ref_clk) begin//spi comman sender
+		if (SPI_flag)
+			leds_2_b <= 8'b1;
+		else
+			leds_2_b <= 8'b0;
+	end
+
 	reg [24:0] ledcounter;
 	always @(posedge ref_clk) begin
 		if (reset)
 			ledcounter <= 24'd0;
 		else begin
 			ledcounter <= ledcounter +1'b1;
-			leds_2_b <= ledcounter[24:17];
+			leds_1_b <= ledcounter[24:17];
 		end
 	end
 
