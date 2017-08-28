@@ -1,3 +1,4 @@
+//this seems to get inferred as a dual port ebr due to the mask logic requiring a read back of the current contents in a single clk cycle
 module ram (din, mask, addr, write_en, clk, dout);
 	parameter addr_width = 8;
 	parameter data_width = 8;

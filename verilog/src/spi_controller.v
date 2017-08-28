@@ -109,7 +109,7 @@ module spi_controller (
 		end
 	end
 
-	tuning_code_lookup tuning_code_lookup(.i_clk(i_clk),.midi_byte(midi_byte),.tuning_code(tuning_code));
+	tuning_code_lookup tuning_code_lookup(.midi_byte(midi_byte),.tuning_code(tuning_code));
 
 	//debug leds
 	always @(posedge i_clk) begin

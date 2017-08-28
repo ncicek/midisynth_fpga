@@ -1,11 +1,10 @@
-`timescale 10ns / 10ns
 module tuning_code_lookup(
-	input wire i_clk,
+	//input wire i_clk,
 	input wire [6:0] midi_byte,
 	output reg [31:0] tuning_code
 );
 
-	always @(posedge i_clk) begin
+	always @(midi_byte or tuning_code) begin
 		case(midi_byte)
 			7'd0:	tuning_code <= 32'd732;
 			7'd1:	tuning_code <= 32'd775;

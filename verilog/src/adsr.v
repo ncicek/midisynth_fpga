@@ -1,5 +1,6 @@
 //`default_nettype none
 
+//memory write masks
 `define	MASK_KEYSTATE 38'b1
 `define	MASK_STATE 38'b11110
 `define	MASK_ENVELOPE 38'b11111111111111111111111111111111100000
@@ -59,19 +60,16 @@ module ADSR(
 	assign envelope_truncated = dout_envelope[32:17];	//should i use din or dout envelope here?
 
 	reg new_update_available;
-	reg keystate_update; //buffers incoming delta phase updates for the above state machine to service
+	reg keystate_update; //buffers incoming updates for the above state machine to service
 	reg [7:0] voice_addr_update;    //buffers incoming voice index updates "
 	reg signed [31:0] output_temp;
-	//reg key_state_reg;
 
 	always @(posedge i_clk) begin
 		if (i_reset == 1'b1) begin
 			addr <= 8'b0;
+			o_voice_index_next <= 8'b0;
 		end
 		else begin
-			//din_envelope <= dout_envelope;
-			//din_state <= dout_state;
-			//din_keystate <= dout_keystate;
 			case (i_pipeline_state)
 				0:	begin	//read from mem
 					addr <= i_voice_index;
@@ -147,22 +145,22 @@ module ADSR(
 					end
 				end
 			endcase
-
 		end
-
 	end
 
 	//check every clock edge if a new update is avaible and buffer it
 	always @(posedge i_clk) begin
 		if (i_reset)
 			new_update_available <= 1'b0;
-		else if (i_SPI_flag & ~new_update_available) begin
-			keystate_update <= i_SPI_note_status;
-			voice_addr_update <= i_SPI_voice_index;
-			new_update_available <= 1'b1;
+		else begin
+			if (i_SPI_flag & ~new_update_available) begin
+				keystate_update <= i_SPI_note_status;
+				voice_addr_update <= i_SPI_voice_index;
+				new_update_available <= 1'b1;
+			end
+			else if (new_update_available & i_pipeline_state==2'd2) //state2 is when we can reset because that is when above block samples new_update_available
+				new_update_available <= 1'b0;
 		end
-		else if (new_update_available & i_pipeline_state==2'd2) //state2 is when we can reset
-			new_update_available <= 1'b0;
 	end
 
 

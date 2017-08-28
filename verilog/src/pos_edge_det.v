@@ -1,6 +1,8 @@
-module pos_edge_det ( input wire sig,
-                      input wire clk,
-                      output wire pe);
+module pos_edge_det(
+  input wire sig,
+  input wire clk,
+  output wire pe
+);
 
   reg sig_dly;
   always @ (posedge clk) begin
@@ -8,5 +10,4 @@ module pos_edge_det ( input wire sig,
   end
 
   assign pe = sig & ~sig_dly;
-  //assign pe = sig_dly != sig;
 endmodule

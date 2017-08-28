@@ -70,7 +70,7 @@ module voice_controller(
 	always @(posedge i_clk) begin
 		if (i_reset) begin
 			pipeline_state <= 2'b0;
-			wave_select <= 4'd1;
+			wave_select <= 4'd0;
 
 			attack_amt <= 16'd10000;
 			decay_amt <= 16'd10000;

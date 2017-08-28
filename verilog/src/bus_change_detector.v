@@ -1,3 +1,4 @@
+//outputs a 1 clk long pulse after a change in the bus is detected
 module bus_change_detector #(
   parameter BUS_WIDTH = 8
 )
