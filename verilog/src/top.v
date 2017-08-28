@@ -1,4 +1,4 @@
-// `default_nettype none
+//`default_nettype none
 module top(
 	input wire ref_clk,
 	input wire button,
@@ -11,7 +11,8 @@ module top(
 	output wire [15:0] dac_out,
 	output wire [7:0] leds_0_b,
 	output wire [7:0] leds_1_b,
-	output wire [7:0] leds_2_b
+	output wire [7:0] leds_2_b,
+	output wire [1:0] byte_counter
 	);
 
 	wire clk;
@@ -36,12 +37,13 @@ module top(
 	.o_dac_out(dac_out),
 	.leds_0(leds_0),
 	.leds_1(leds_1),
-	.leds_2(leds_2)
+	.leds_2(leds_2),
+	.byte_counter_debug(byte_counter)
 	);
 
 	assign leds_0_b = ~leds_0;
-	assign leds_1_b = ~leds_1;
-	assign leds_2_b = ~leds_2;
+	assign leds_1_b = leds_1;
+	assign leds_2_b = leds_2;
 	//assign debug_bus[0] = clk;
 	//assign debug_bus[16:1] = dac_out;
 

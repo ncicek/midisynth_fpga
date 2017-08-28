@@ -47,9 +47,9 @@ module spi_slave (reset,ten,tdata,mlb,ss,sck,sdin, sdout,done,rdata);
 	input wire reset,ss,sck,sdin,ten,mlb;
 	input wire [7:0] tdata;
 	output wire sdout;           //slave out   master in
-	output reg done;
 	output reg [7:0] rdata;
 
+  reg done;
 	reg [7:0] treg,rreg;
 	reg [3:0] nb;
 	wire sout;
@@ -74,6 +74,9 @@ always @(posedge sck)
 			else  begin rdata=rreg; done=1; nb=0; end
 		end	 //if(!ss)_END  if(nb==8)
 	end
+
+//converts done into a strobe signal for use in a sycnhronizer
+//pos_edge_det pos_edge_det (.sig(done), .clk(sck), .pe(done_strobe));
 
 //send to  sdout
 always @(negedge sck)

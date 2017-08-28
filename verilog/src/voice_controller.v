@@ -98,7 +98,7 @@ module voice_controller(
 			if (pipeline_state == 2'd0)	//incrementor
 				voice_index <= voice_index + 1'b1;
 
-			else if (pipeline_state == 2'd2) begin	//mixer
+			else if (pipeline_state == 2'd3) begin	//mixer
 				if (voice_index == 8'hff) begin
 					o_mixed_sample <= mixer_buffer + adsr_output;  //spit out a mixed sample
 					mixer_buffer <= 24'sd0;   //clear the mixer buffer when voice counter is full to prepare for the next sample

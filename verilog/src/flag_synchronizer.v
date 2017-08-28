@@ -1,8 +1,8 @@
 module flag_synchronizer(
-		input clkA,
-		input FlagIn_clkA,   // this is a one-clock pulse from the clkA domain
-		input clkB,
-		output FlagOut_clkB   // from which we generate a one-clock pulse in clkB domain
+		input wire clkA,
+		input wire FlagIn_clkA,   // this is a one-clock pulse from the clkA domain
+		input wire clkB,
+		output wire FlagOut_clkB   // from which we generate a one-clock pulse in clkB domain
 );
 
 reg FlagToggle_clkA;
