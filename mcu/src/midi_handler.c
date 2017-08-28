@@ -50,7 +50,7 @@ uint8_t handleNoteOn(struct voice voice_table[NUMBER_OF_VOICES], uint8_t voice_i
   SPI_transmit_wrapper(EUSCI_B0_BASE, voice_index);
   SPI_transmit_wrapper(EUSCI_B0_BASE, midi_note);
   SPI_transmit_wrapper(EUSCI_B0_BASE, velocity);
-  return (voice_index++);
+  return (voice_index+1);
 }
 
 uint8_t handleNoteOff(struct voice voice_table[NUMBER_OF_VOICES], uint8_t midi_note) {
@@ -109,7 +109,8 @@ void handleCC(uint8_t cc, uint8_t value){
 }
 
 uint8_t checkifbyteis(uint8_t byte, uint8_t check){
-    return ((byte >> 4) == (check >> 4));
+  return ((byte >> 4) == (check >> 4)); //lower bits are the midi channel number. ignore them for now
+  //return (byte == check);
 }
 
 void SPI_transmit_wrapper(uint32_t moduleInstance, uint_fast8_t transmitData){
