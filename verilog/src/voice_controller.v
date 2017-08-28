@@ -79,7 +79,8 @@ module voice_controller(
 
 		end
 		else begin
-			if (pipeline_state < 2'd3)
+			//counts: 0,1,2,0,1,2
+			if (pipeline_state < 2'd2)
 				pipeline_state <= pipeline_state + 1'b1;
 			else
 				pipeline_state <= 2'd0;
@@ -88,29 +89,43 @@ module voice_controller(
 
 
 	reg signed [23:0] mixer_buffer;
+	//voice_index incrementor
+	always @(posedge i_clk) begin
+		if (i_reset) begin
+			voice_index <= 8'd0;
+		end
+		else begin
+			if (pipeline_state == 2'd0)
+				voice_index <= voice_index + 1'b1;
+		end
+	end
 
+	//mixer
 	always @(posedge i_clk) begin
 		if (i_reset) begin
 			o_mixed_sample <= 24'sd0;
 			mixer_buffer <= 24'sd0;
-			voice_index <= 8'd0;
 		end
 		else begin
-			/*
-			if (pipeline_state == 2'd0)	//incrementor
+			if (pipeline_state == 2'd2) begin
+				mixer_buffer <= mixer_buffer + adsr_output;
 
-			*/
-			if (pipeline_state == 2'd3) begin	//mixer
-				voice_index <= voice_index + 1'b1;
-				if (voice_index == 8'hff) begin
+				if (voice_index == 8'h00) begin
 					o_mixed_sample <= mixer_buffer + adsr_output;  //spit out a mixed sample
 					mixer_buffer <= 24'sd0;   //clear the mixer buffer when voice counter is full to prepare for the next sample
-				end
-				else begin
-					mixer_buffer <= mixer_buffer + adsr_output;
 				end
 			end
 		end
 	end
+
+
+	//debugging logic
+	wire change_phase_pulse;
+	wire change_wavetable_pulse;
+	wire change_adsr_pulse;
+	bus_change_detector #(.BUS_WIDTH(10)) bus_change_detector_phase(.i_clk(i_clk), .i_bus(phase), .o_bus_change(change_phase_pulse));
+	bus_change_detector #(.BUS_WIDTH(16)) bus_change_detector_wavetable(.i_clk(i_clk), .i_bus(wavetable_output), .o_bus_change(change_wavetable_pulse));
+	bus_change_detector #(.BUS_WIDTH(16)) bus_change_detector_adsr(.i_clk(i_clk), .i_bus(adsr_output), .o_bus_change(change_adsr_pulse));
+
 
 endmodule

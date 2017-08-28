@@ -39,7 +39,7 @@ module voice_controller_tb;
     #4//start note
     SPI_flag = 1;
     SPI_tuning_code = 20*1000000;
-    SPI_voice_index = 5;
+    SPI_voice_index = 253;
     SPI_note_status = 1'b1;
 		#2
     SPI_flag = 0;
@@ -55,7 +55,7 @@ module voice_controller_tb;
 		#20//start note
 		SPI_flag = 1;
     SPI_tuning_code = 60*1000000;
-    SPI_voice_index = 6;
+    SPI_voice_index = 252;
     SPI_note_status = 1'b1;
     #2
     SPI_flag = 0;
