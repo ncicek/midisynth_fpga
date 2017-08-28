@@ -42,7 +42,7 @@ module voice_controller(
 	reg [15:0] decay_amt;
 	reg [15:0] sustain_amt;
 	reg [15:0] rel_amt;
-
+	wire [7:0] adsr_voice_index_next;
 	wire signed [15:0] adsr_output;
 
 	ADSR ADSR (
@@ -62,6 +62,7 @@ module voice_controller(
 		.i_sustain_amt(sustain_amt),
 		.i_rel_amt(rel_amt),
 
+		.o_voice_index_next(adsr_voice_index_next),
 		.o_sample(adsr_output)
 	);
 	////////////////////////////////////////////////////////////////////////
@@ -95,10 +96,12 @@ module voice_controller(
 			voice_index <= 8'd0;
 		end
 		else begin
+			/*
 			if (pipeline_state == 2'd0)	//incrementor
-				voice_index <= voice_index + 1'b1;
 
-			else if (pipeline_state == 2'd3) begin	//mixer
+			*/
+			if (pipeline_state == 2'd3) begin	//mixer
+				voice_index <= voice_index + 1'b1;
 				if (voice_index == 8'hff) begin
 					o_mixed_sample <= mixer_buffer + adsr_output;  //spit out a mixed sample
 					mixer_buffer <= 24'sd0;   //clear the mixer buffer when voice counter is full to prepare for the next sample

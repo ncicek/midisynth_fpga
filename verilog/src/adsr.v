@@ -23,6 +23,7 @@ module ADSR(
 	input wire [15:0] i_sustain_amt,
 	input wire [15:0] i_rel_amt,
 
+	output reg [7:0] o_voice_index_next,
 	output reg signed [15:0] o_sample
 	);
 
@@ -74,6 +75,7 @@ module ADSR(
 			case (i_pipeline_state)
 				0:	begin	//read from mem
 					addr <= i_voice_index;
+					o_voice_index_next <= i_voice_index;
 					write_en <= 1'b0;
 				end
 				1:	begin //compute and write back to mem
