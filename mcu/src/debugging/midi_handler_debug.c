@@ -1,8 +1,6 @@
 #include<stdio.h>
 #include<stdint.h>
 
-#include <ti/devices/msp432p4xx/driverlib/driverlib.h>
-
 #include "midi_handler.h"
 
 #define NOTEON 0x90
@@ -43,33 +41,36 @@ void parseMidi(uint8_t MIDI_Message[]) {
 
 
 uint8_t handleNoteOn(struct voice * voice_table, uint8_t voice_index, uint8_t midi_note, uint8_t velocity) {
-  MAP_GPIO_toggleOutputOnPin(GPIO_PORT_P2, GPIO_PIN0);
+  //MAP_GPIO_toggleOutputOnPin(GPIO_PORT_P2, GPIO_PIN0);
   add_note(voice_table, midi_note, voice_index);
 
-  SPI_transmit_wrapper(EUSCI_B0_BASE, NOTEON);
+  /*SPI_transmit_wrapper(EUSCI_B0_BASE, NOTEON);
   SPI_transmit_wrapper(EUSCI_B0_BASE, voice_index);
   SPI_transmit_wrapper(EUSCI_B0_BASE, midi_note);
-  SPI_transmit_wrapper(EUSCI_B0_BASE, velocity);
+  SPI_transmit_wrapper(EUSCI_B0_BASE, velocity);8*/
+  //printf("send SPI note on %d\n",voice_index);
   return (voice_index+1);
 }
 
 uint8_t handleNoteOff(struct voice * voice_table, uint8_t midi_note) {
-  MAP_GPIO_toggleOutputOnPin(GPIO_PORT_P2, GPIO_PIN1);
+  //MAP_GPIO_toggleOutputOnPin(GPIO_PORT_P2, GPIO_PIN1);
   uint8_t voice_index = remove_note(voice_table, midi_note);
 
-  SPI_transmit_wrapper(EUSCI_B0_BASE, NOTEOFF);
-  SPI_transmit_wrapper(EUSCI_B0_BASE, voice_index);
+  /*SPI_transmit_wrapper(EUSCI_B0_BASE, NOTEOFF);
+  SPI_transmit_wrapper(EUSCI_B0_BASE, voice_index);*/
+  //printf("send SPI note off %d\n",voice_index);
   return(voice_index);
 }
 
 void add_note(struct voice * voice_table, uint8_t midi_note, uint8_t voice_index){
   voice_table[voice_index].midi_note = midi_note;
   voice_table[voice_index].note_state = 1;
+  printf("adding note %d to index %d\n",midi_note,voice_index);
 }
 
 uint8_t remove_note(struct voice * voice_table, uint8_t midi_note){
   int16_t voice_index = find_voice_of_note(voice_table, midi_note);
-
+  printf("removing note %d from index %d\n",midi_note,voice_index);
   if (voice_index != -1){
     voice_table[voice_index].note_state = 0;
     return((uint8_t)voice_index); //return the newly freed voice number
@@ -83,9 +84,11 @@ uint8_t find_voice_of_note(struct voice * voice_table, uint8_t note){
   int16_t i;
   for (i = 0; i < NUMBER_OF_VOICES; i++){
     if (voice_table[i].midi_note == note && voice_table[i].note_state == 1){
+      //printf("found note %d in index %d\n", note, i);
       return (i);
     }
   }
+  printf("could not find note in array\n");
   return(1);
 }
 
@@ -113,7 +116,17 @@ uint8_t checkifbyteis(uint8_t byte, uint8_t check){
   //return (byte == check);
 }
 
-void SPI_transmit_wrapper(uint32_t moduleInstance, uint_fast8_t transmitData){
-  while((EUSCI_B0->IFG >>1) == 0);  //wait until tx is free
-  MAP_SPI_transmitData(moduleInstance, transmitData);
+int main(){
+  uint8_t MIDI_Message_NOTEON_30[3] = {NOTEON, 30, 20};
+  uint8_t MIDI_Message_NOTEOFF_30[3] = {NOTEOFF, 30, 20};
+  uint8_t MIDI_Message_NOTEON_100[3] = {NOTEON, 100, 20};
+  uint8_t MIDI_Message_NOTEOFF_100[3] = {NOTEOFF, 100, 20};
+
+  int i;
+  for (i=0;i<256;i++){
+    parseMidi(MIDI_Message_NOTEON_30);
+    parseMidi(MIDI_Message_NOTEON_100);
+    parseMidi(MIDI_Message_NOTEOFF_30);
+    parseMidi(MIDI_Message_NOTEOFF_100);
+  }
 }
