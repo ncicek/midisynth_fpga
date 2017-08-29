@@ -25,12 +25,13 @@ module wavetable(
 	//.Theta(phase),	//10 bit input
 	//.Sine(sine_sample)	//16 bit signed output
 	//);
-
+/*
 	sine_table sine_table
 	(
 	.theta(i_phase),
 	.sine_sample(sine_sample)
 	);
+	*/
 
 	square_wave square_wave
 	(
