@@ -20,6 +20,10 @@ module voice_controller_tb;
   	.o_mixed_sample(mixed_sample)
   	);
 
+	wire [15:0] o_dac_out;
+	//assign o_dac_out = mixed_sample[23:8] + 16'd32768;	 //dc offset into the middle of the dac range
+	assign o_dac_out = mixed_sample[18:3] + 16'sd32768;	 //dc offset into the middle of the dac range
+
 	always begin
 		#1 clk = !clk;
 	end
@@ -69,7 +73,7 @@ module voice_controller_tb;
 
     //#100000000 $finish;
 		*/
-		#20000000 $finish;
+		//#20000000 $finish;
 
 	end
 
