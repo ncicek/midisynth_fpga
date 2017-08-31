@@ -72,10 +72,10 @@ module voice_controller(
 			pipeline_state <= 2'b0;
 			wave_select <= 4'd1;
 
-			attack_amt <= 16'd1000;
+			attack_amt <= 16'hffff;
 			decay_amt <= 16'd100;
-			sustain_amt <= 16'd60000;
-			rel_amt <= 16'd10000;
+			sustain_amt <= 16'hff0f;
+			rel_amt <= 16'hffff;
 
 		end
 		else begin
