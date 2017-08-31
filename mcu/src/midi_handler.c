@@ -32,7 +32,7 @@ void parseMidi(uint8_t MIDI_Message[]) {
 			  voice_index = handleNoteOn(voice_table, voice_index, MIDI_Message[1], MIDI_Message[2]);
       }
       else if (checkifbyteis(MIDI_Message[0], NOTEOFF) || (checkifbyteis(MIDI_Message[0], NOTEON) && MIDI_Message[2] == 0)){
-				voice_index = handleNoteOff(voice_table,MIDI_Message[1]);
+				voice_index = handleNoteOff(voice_table, voice_index, MIDI_Message[1]);
       }
 			else if(checkifbyteis(MIDI_Message[0], CC)){
 				handleCC(MIDI_Message[1], MIDI_Message[2]);
@@ -50,15 +50,19 @@ uint8_t handleNoteOn(struct voice * voice_table, uint8_t voice_index, uint8_t mi
   SPI_transmit_wrapper(EUSCI_B0_BASE, voice_index);
   SPI_transmit_wrapper(EUSCI_B0_BASE, midi_note);
   SPI_transmit_wrapper(EUSCI_B0_BASE, velocity);
-  return (voice_index+1);
+  voice_index = voice_index + 1;
+  return (voice_index);
 }
 
-uint8_t handleNoteOff(struct voice * voice_table, uint8_t midi_note) {
+uint8_t handleNoteOff(struct voice * voice_table, uint8_t voice_index, uint8_t midi_note) {
   MAP_GPIO_toggleOutputOnPin(GPIO_PORT_P2, GPIO_PIN1);
-  uint8_t voice_index = remove_note(voice_table, midi_note);
+  uint8_t voice_index_to_be_removed = remove_note(voice_table, midi_note);  //skip this algorithm
+  //INSTEAD WE CYCLE VOICES IN ROUND ROBIN FASHION
+  remove_note(voice_table, midi_note);
 
   SPI_transmit_wrapper(EUSCI_B0_BASE, NOTEOFF);
-  SPI_transmit_wrapper(EUSCI_B0_BASE, voice_index);
+  SPI_transmit_wrapper(EUSCI_B0_BASE, voice_index_to_be_removed);
+  voice_index = voice_index + 1;  //round robin
   return(voice_index);
 }
 

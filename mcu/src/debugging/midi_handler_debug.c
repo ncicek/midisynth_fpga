@@ -30,7 +30,7 @@ void parseMidi(uint8_t MIDI_Message[]) {
 			  voice_index = handleNoteOn(voice_table, voice_index, MIDI_Message[1], MIDI_Message[2]);
       }
       else if (checkifbyteis(MIDI_Message[0], NOTEOFF) || (checkifbyteis(MIDI_Message[0], NOTEON) && MIDI_Message[2] == 0)){
-				voice_index = handleNoteOff(voice_table,MIDI_Message[1]);
+				voice_index = handleNoteOff(voice_table, voice_index, MIDI_Message[1]);
       }
 			else if(checkifbyteis(MIDI_Message[0], CC)){
 				handleCC(MIDI_Message[1], MIDI_Message[2]);
@@ -49,17 +49,20 @@ uint8_t handleNoteOn(struct voice * voice_table, uint8_t voice_index, uint8_t mi
   SPI_transmit_wrapper(EUSCI_B0_BASE, midi_note);
   SPI_transmit_wrapper(EUSCI_B0_BASE, velocity);8*/
   //printf("send SPI note on %d\n",voice_index);
-  return (voice_index+1);
+  return (voice_index + 1);
 }
 
-uint8_t handleNoteOff(struct voice * voice_table, uint8_t midi_note) {
+uint8_t handleNoteOff(struct voice * voice_table, uint8_t voice_index, uint8_t midi_note) {
   //MAP_GPIO_toggleOutputOnPin(GPIO_PORT_P2, GPIO_PIN1);
-  uint8_t voice_index = remove_note(voice_table, midi_note);
+  //uint8_t voice_index = remove_note(voice_table, midi_note);
+  remove_note(voice_table, midi_note); //forgo this crappy algorithm for now
+
+  //INSTEAD WE WILL CYCLE VOICES ROUND ROBIN
 
   /*SPI_transmit_wrapper(EUSCI_B0_BASE, NOTEOFF);
   SPI_transmit_wrapper(EUSCI_B0_BASE, voice_index);*/
   //printf("send SPI note off %d\n",voice_index);
-  return(voice_index);
+  return(voice_index + 1);
 }
 
 void add_note(struct voice * voice_table, uint8_t midi_note, uint8_t voice_index){
