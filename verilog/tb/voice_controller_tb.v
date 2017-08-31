@@ -3,7 +3,8 @@
 module voice_controller_tb;
 	reg clk;
 	reg reset;
-	reg SPI_flag;
+	reg SPI_flag_dds;
+	reg SPI_flag_adsr;
 	reg [31:0] SPI_tuning_code;
 	reg [7:0] SPI_voice_index;
   reg SPI_note_status;
@@ -16,7 +17,8 @@ module voice_controller_tb;
   	.i_SPI_voice_index(SPI_voice_index),
   	.i_SPI_tuning_code(SPI_tuning_code),
   	.i_SPI_velocity(),
-  	.i_SPI_flag(SPI_flag),
+  	.i_SPI_flag_dds(SPI_flag_dds),	
+	.i_SPI_flag_adsr(SPI_flag_adsr),
   	.o_mixed_sample(mixed_sample)
   	);
 
@@ -41,20 +43,22 @@ module voice_controller_tb;
 
 
     #400//start note
-    SPI_flag = 1;
+    SPI_flag_dds = 1;	   	 
+	SPI_flag_adsr = 1;
     SPI_tuning_code = 20*1000000;
     SPI_voice_index = 253;
     SPI_note_status = 1'b1;
-		#2
-    SPI_flag = 0;
+	#2
+    SPI_flag_dds = 0;	   	 
+	SPI_flag_adsr = 0;
 
 
     #5000000 //stop note
-    SPI_flag = 1;
+    SPI_flag_adsr = 1;
     SPI_voice_index = 253;
     SPI_note_status = 1'b0;
     #2
-    SPI_flag = 0;
+    SPI_flag_adsr = 0;
  /*
 		#20//start note
 		SPI_flag = 1;
