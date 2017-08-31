@@ -10,7 +10,8 @@ module spi_controller (
 	output reg [7:0] o_SPI_voice_index,
 	output reg [31:0] o_SPI_tuning_code,
 	output reg [6:0] o_SPI_velocity,
-	output reg o_SPI_flag,//acts as a strobe to show when SPI data is valid
+	output reg o_SPI_flag_dds,//acts as a strobe to show when SPI data is valid to dds
+	output reg o_SPI_flag_adsr,//acts as a strobe to show when SPI data is valid to adsr
 
 	output reg [7:0] leds_0,leds_1,leds_2,
   output wire [1:0] byte_counter_debug
@@ -44,7 +45,8 @@ module spi_controller (
 			o_SPI_voice_index <= 8'b0;
 			o_SPI_tuning_code <= 7'b0;
 			o_SPI_velocity <= 7'b0;
-			o_SPI_flag <= 1'b0;
+			o_SPI_flag_dds <= 1'b0;
+			o_SPI_flag_adsr <= 1'b0;
 
 			byte_counter <= 2'd0;
 		end
@@ -52,7 +54,8 @@ module spi_controller (
 			case (byte_counter)
 				0:	//note_status
 				begin
-					o_SPI_flag <= 1'b0;
+					o_SPI_flag_dds <= 1'b0;
+					o_SPI_flag_adsr <= 1'b0;
           if (done_sync) begin	//posedge of rx_irq(done) begin
   					if (rdata == NOTEON) begin
   						o_SPI_note_status <= 1'b1;
@@ -76,7 +79,7 @@ module spi_controller (
   						o_SPI_tuning_code <= 31'b0;  //clear out these guys to avoid confusion
               midi_byte <= 7'b0;
   						o_SPI_velocity <= 7'b0;
-  						o_SPI_flag <= 1'b1;
+  						o_SPI_flag_adsr <= 1'b1;	//a noteoff only needs to flag the adsr, not dds
   						byte_counter <= 2'd0;
   					end
           end
@@ -99,7 +102,8 @@ module spi_controller (
   						o_SPI_tuning_code <= tuning_code;
   						o_SPI_velocity <= rdata[6:0];
   						byte_counter <= 2'd0;
-  						o_SPI_flag <= 1'b1;
+  						o_SPI_flag_adsr <= 1'b1; //a noteon needs to flag both the adsr and dds
+							o_SPI_flag_dds <= 1'b1;
   					end
   					else
   						byte_counter <= 2'd0;
@@ -113,7 +117,7 @@ module spi_controller (
 
 	//debug leds
 	always @(posedge i_clk) begin
-		if (o_SPI_flag) begin
+		if (o_SPI_flag_adsr | o_SPI_flag_dds) begin
 			leds_0 <= midi_byte;
 			leds_2 <= o_SPI_velocity;
 		end

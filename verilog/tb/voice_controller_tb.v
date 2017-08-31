@@ -1,4 +1,4 @@
-`timescale 10ns / 10ns
+`timescale 1ns / 1ns
 `default_nettype none
 module voice_controller_tb;
 	reg clk;
@@ -25,7 +25,7 @@ module voice_controller_tb;
 	assign o_dac_out = mixed_sample[18:3] + 16'sd32768;	 //dc offset into the middle of the dac range
 
 	always begin
-		#1 clk = !clk;
+		#1 clk = ~clk;
 	end
 
 
@@ -40,7 +40,7 @@ module voice_controller_tb;
 		#10 reset = 0;
 
 
-    #4//start note
+    #400//start note
     SPI_flag = 1;
     SPI_tuning_code = 20*1000000;
     SPI_voice_index = 253;
@@ -48,14 +48,14 @@ module voice_controller_tb;
 		#2
     SPI_flag = 0;
 
-/*
-    #10000000 //stop note
+
+    #5000000 //stop note
     SPI_flag = 1;
-    SPI_voice_index = 5;
+    SPI_voice_index = 253;
     SPI_note_status = 1'b0;
     #2
     SPI_flag = 0;
-*/
+ /*
 		#20//start note
 		SPI_flag = 1;
     SPI_tuning_code = 20*1000000;
@@ -63,18 +63,18 @@ module voice_controller_tb;
     SPI_note_status = 1'b1;
     #2
     SPI_flag = 0;
-		/*
-    #10000000 //stop note
+
+    #500000 //stop note
     SPI_flag = 1;
-    SPI_voice_index = 1;
+    SPI_voice_index = 252;
     SPI_note_status = 1'b0;
     #2
     SPI_flag = 0;
 
     //#100000000 $finish;
-		*/
-		//#20000000 $finish;
 
+		//#20000000 $finish;
+*/
 	end
 
 endmodule

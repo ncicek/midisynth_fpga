@@ -7,7 +7,8 @@ module voice_controller(
 	input wire [7:0] i_SPI_voice_index,
 	input wire [31:0] i_SPI_tuning_code,
 	input wire [6:0] i_SPI_velocity,
-	input wire i_SPI_flag,
+	input wire i_SPI_flag_dds,
+	input wire i_SPI_flag_adsr,
 
 	output reg signed [23:0] o_mixed_sample
 	);
@@ -21,7 +22,7 @@ module voice_controller(
 
 	dds dds (.i_clk(i_clk),
 	.i_reset(i_reset),
-	.i_SPI_flag(i_SPI_flag),
+	.i_SPI_flag(i_SPI_flag_dds),
 	.i_SPI_tuning_code(i_SPI_tuning_code),
 	.i_SPI_voice_index(i_SPI_voice_index),
 	.i_voice_index(voice_index),
@@ -38,10 +39,10 @@ module voice_controller(
 	wavetable wavetable(.i_clk(i_clk),.i_reset(i_reset),.i_phase(phase),.i_wave_select(wave_select),.i_voice_index(dds_voice_index_next),.i_pipeline_state(pipeline_state),.o_voice_index_next(wavetable_voice_index_next),.o_sample(wavetable_output));
 
 	//ADSR////////////////////////////////////////////////////////////////////
-	reg[15:0] attack_amt;
-	reg [15:0] decay_amt;
-	reg [15:0] sustain_amt;
-	reg [15:0] rel_amt;
+	reg[23:0] attack_amt;
+	reg [23:0] decay_amt;
+	reg [23:0] sustain_amt;
+	reg [23:0] rel_amt;
 	wire [7:0] adsr_voice_index_next;
 	wire signed [15:0] adsr_output;
 
@@ -49,7 +50,7 @@ module voice_controller(
 		.i_clk(i_clk),
 		.i_reset(i_reset),
 
-		.i_SPI_flag(i_SPI_flag),
+		.i_SPI_flag(i_SPI_flag_adsr),
 		.i_SPI_note_status(i_SPI_note_status),
 		.i_SPI_voice_index(i_SPI_voice_index),
 
@@ -72,10 +73,10 @@ module voice_controller(
 			pipeline_state <= 2'b0;
 			wave_select <= 4'd1;
 
-			attack_amt <= 16'hffff;
-			decay_amt <= 16'd100;
-			sustain_amt <= 16'hff0f;
-			rel_amt <= 16'hffff;
+			attack_amt <= 24'h5f0fff;
+			decay_amt <= 24'd1000;
+			sustain_amt <= 24'hff0fff;
+			rel_amt <= 24'h5f0fff;
 
 		end
 		else begin

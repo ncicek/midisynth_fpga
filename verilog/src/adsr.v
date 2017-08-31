@@ -19,10 +19,10 @@ module ADSR(
 	input wire[1:0] i_pipeline_state,
 	input wire signed [15:0] i_sample,
 
-	input wire [15:0] i_attack_amt,
-	input wire [15:0] i_decay_amt,
-	input wire [15:0] i_sustain_amt,
-	input wire [15:0] i_rel_amt,
+	input wire [23:0] i_attack_amt,
+	input wire [23:0] i_decay_amt,
+	input wire [23:0] i_sustain_amt,
+	input wire [23:0] i_rel_amt,
 
 	output reg [7:0] o_voice_index_next,
 	output reg signed [15:0] o_sample
@@ -67,6 +67,7 @@ module ADSR(
 	always @(posedge i_clk) begin
 		if (i_reset == 1'b1) begin
 			addr <= 8'b0;
+			write_en <= 1'b0;
 			o_voice_index_next <= 8'b0;
 		end
 		else begin
@@ -117,7 +118,7 @@ module ADSR(
 								mask <= `MASK_STATE;
 								din_state <= 4'd3;
 							end
-							else if (dout_envelope > (i_sustain_amt<<16)) begin
+							else if (dout_envelope > (i_sustain_amt)) begin
 								mask <= `MASK_ENVELOPE;
 								din_envelope <= dout_envelope - i_decay_amt;
 							end
@@ -136,13 +137,15 @@ module ADSR(
 					endcase
 				end
 				2: begin    //update ram
-					write_en <= 1'b1;
 					if (new_update_available) begin
 							//new_update_available <= 1'b0; //clear the bit
 							addr <= voice_addr_update;
+							write_en <= 1'b1;
 							mask <= `MASK_KEYSTATE;
 							din_keystate <= keystate_update;
 					end
+					else
+						write_en <= 1'b0;
 				end
 			endcase
 		end
