@@ -53,12 +53,12 @@ module voice_controller_tb;
 	SPI_flag_adsr = 0;
 
 
-    #5000000 //stop note
+    /*#5000000 //stop note
     SPI_flag_adsr = 1;
     SPI_voice_index = 253;
     SPI_note_status = 1'b0;
     #2
-    SPI_flag_adsr = 0;
+    SPI_flag_adsr = 0;*/
  /*
 		#20//start note
 		SPI_flag = 1;

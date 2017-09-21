@@ -1,4 +1,4 @@
-//`default_nettype none
+`default_nettype none
 module voice_controller(
 	input wire i_clk,
 	input wire i_reset,
@@ -39,10 +39,6 @@ module voice_controller(
 	wavetable wavetable(.i_clk(i_clk),.i_reset(i_reset),.i_phase(phase),.i_wave_select(wave_select),.i_voice_index(dds_voice_index_next),.i_pipeline_state(pipeline_state),.o_voice_index_next(wavetable_voice_index_next),.o_sample(wavetable_output));
 
 	//ADSR////////////////////////////////////////////////////////////////////
-	reg[23:0] attack_amt;
-	reg [23:0] decay_amt;
-	reg [23:0] sustain_amt;
-	reg [23:0] rel_amt;
 	wire [7:0] adsr_voice_index_next;
 	wire signed [15:0] adsr_output;
 
@@ -58,11 +54,6 @@ module voice_controller(
 		.i_pipeline_state(pipeline_state),
 		.i_sample(wavetable_output),
 
-		.i_attack_amt(attack_amt),
-		.i_decay_amt(decay_amt),
-		.i_sustain_amt(sustain_amt),
-		.i_rel_amt(rel_amt),
-
 		.o_voice_index_next(adsr_voice_index_next),
 		.o_sample(adsr_output)
 	);
@@ -72,12 +63,6 @@ module voice_controller(
 		if (i_reset) begin
 			pipeline_state <= 2'b0;
 			wave_select <= 4'd0;
-
-			attack_amt <= 24'h0f0fff;
-			decay_amt <= 24'd1000;
-			sustain_amt <= 24'hff0fff;
-			rel_amt <= 24'h0f0fff;
-
 		end
 		else begin
 			//counts: 0,1,2,0,1,2

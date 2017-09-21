@@ -25,6 +25,8 @@ def is_positive(val):
 
 
 input_bits = 10
+input_bits = 6
+output_bits = 16
 output_bits = 16
 
 fo = open("foo.txt", "wb")
