@@ -75,7 +75,8 @@ module ADSR(
 	ram #(.addr_width(8),.data_width(data_width))
 	adsr_ram(.din(din), .mask(mask),.addr(addr), .write_en(write_en), .clk(i_clk), .dout(dout));
 
-	reg signed[2*env_bitdepth-1:0] multiplied_envelope;
+	reg signed [2*env_bitdepth-1:0] multiplied_envelope;
+	reg signed [env_bitdepth+1:0] multiplied_envelope_truncated;
 	reg signed [env_bitdepth+1:0] envelope_calculation; //lenght=bitdepth + 1
 
 	//inernal wire. required to convert unsigned to signed before multiplying
@@ -165,7 +166,8 @@ module ADSR(
 
 						3:	begin //release
 							multiplied_envelope = dout_envelope * releaseCoef;
-							envelope_calculation = releaseBase + multiplied_envelope[(2*env_bitdepth-1):env_bitdepth];
+							multiplied_envelope_truncated = multiplied_envelope[(2*env_bitdepth-1):env_bitdepth];
+							envelope_calculation = releaseBase + multiplied_envelope_truncated;
 
 							if (envelope_calculation <= 26'sd0) begin	//if we have slipped into a negative envelope region
 								mask <= `MASK_STATE|`MASK_ENVELOPE;
