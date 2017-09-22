@@ -46,7 +46,7 @@ module ADSR(
 	reg [env_bitdepth-1:0] releaseCoef = 24'd16769492;
 
 	reg [env_bitdepth-1:0] attackBase = 24'd1599;
-	reg [env_bitdepth-1:0] decayBase = 36'd5406;
+	reg [env_bitdepth-1:0] decayBase = 24'd5406;
 	reg signed [env_bitdepth-1:0] releaseBase = -24'sd1;
 
 	localparam data_width = env_bitdepth + 5;	//update this with the assignments below
@@ -75,7 +75,7 @@ module ADSR(
 	ram #(.addr_width(8),.data_width(data_width))
 	adsr_ram(.din(din), .mask(mask),.addr(addr), .write_en(write_en), .clk(i_clk), .dout(dout));
 
-	reg [2*env_bitdepth-1:0] multiplied_envelope;
+	reg signed[2*env_bitdepth-1:0] multiplied_envelope;
 	reg signed [env_bitdepth+1:0] envelope_calculation; //lenght=bitdepth + 1
 
 	//inernal wire. required to convert unsigned to signed before multiplying
@@ -167,7 +167,7 @@ module ADSR(
 							multiplied_envelope = dout_envelope * releaseCoef;
 							envelope_calculation = releaseBase + multiplied_envelope[(2*env_bitdepth-1):env_bitdepth];
 
-							if (envelope_calculation <= {(env_bitdepth+1){1'b0}}) begin	//if we have slipped into a negative envelope region
+							if (envelope_calculation <= 26'sd0) begin	//if we have slipped into a negative envelope region
 								mask <= `MASK_STATE|`MASK_ENVELOPE;
 								din_state <= 4'd0;
 								din_envelope <= {env_bitdepth{1'b0}};
