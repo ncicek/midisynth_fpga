@@ -40,7 +40,7 @@ module dds(
 	assign din[63:32] = din_delta_phase;
 
 	ram #(.addr_width(8),.data_width(data_width))
-	dds_ram(.din(din), .mask(mask),.addr(addr), .write_en(write_en), .clk(i_clk), .dout(dout));
+	dds_ram(.i_clk(i_clk), .i_reset(i_reset), .din(din), .mask(mask),.addr(addr), .write_en(write_en), .dout(dout));
 
 
 	reg new_update_available;

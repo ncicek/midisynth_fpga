@@ -17,10 +17,12 @@ module top(
 
 	wire clk;
 	wire reset;
-	assign reset = ~button;
+	wire reset_b;
+	two_flop_cdc two_flop_cdc_reset(clk,button,reset_b);
+	assign reset = ~reset_b;
 
-	GSR GSR_INST (.GSR (reset));
-	PUR PUR_INST (.PUR (reset));
+	//GSR GSR_INST (.GSR (reset));
+	//PUR PUR_INST (.PUR (reset));
 
 	//PLL
 	pll pll (.CLKI(ref_clk), .CLKOP(clk));

@@ -73,7 +73,7 @@ module ADSR(
 	assign din[0] = din_keystate;
 
 	ram #(.addr_width(8),.data_width(data_width))
-	adsr_ram(.din(din), .mask(mask),.addr(addr), .write_en(write_en), .clk(i_clk), .dout(dout));
+	adsr_ram(.i_clk(i_clk), .i_reset(i_reset), .din(din), .mask(mask),.addr(addr), .write_en(write_en), .dout(dout));
 
 	reg signed [2*env_bitdepth-1:0] multiplied_envelope;
 	reg signed [env_bitdepth+1:0] multiplied_envelope_truncated;

@@ -14,6 +14,10 @@ uint8_t find_voice_of_note(struct voice * voice_table, uint8_t note);
 void handleCC(uint8_t cc, uint8_t value);
 uint8_t checkifbyteis (uint8_t byte, uint8_t check);
 void SPI_transmit_wrapper(uint32_t moduleInstance, uint_fast8_t transmitData);
+uint32_t float_to_fixedpoint(float64_t float_coeff, uint8_t bits);
+float64_t calcCoef(rate, targetRatio);
+
+
 
 
 #endif

@@ -1,9 +1,12 @@
 #include<stdio.h>
 #include<stdint.h>
-
+#include <math.h>
 #include <ti/devices/msp432p4xx/driverlib/driverlib.h>
 
+
 #include "midi_handler.h"
+
+#define RATE 24E6/256/3
 
 #define NOTEON 0x90
 #define NOTEOFF 0x80
@@ -96,6 +99,12 @@ uint8_t find_voice_of_note(struct voice * voice_table, uint8_t note){
 void handleCC(uint8_t cc, uint8_t value){
 	switch (cc){
 		case ATTACK_CC:
+      float64_t targetRatioA = (float64_t)value/(2^7);  //scale to 0-1.0
+      uint32_t attackCoef = float_to_fixedpoint( calcCoef(RATE,targetRatioA) ,24);
+      uint32_t attackBase = float_to_fixedpoint( (1.0 + targetRatioA) * (1.0 - attackCoef) ,24);
+
+      SPI_transmit_wrapper(EUSCI_B0_BASE, CC);
+      SPI_transmit_wrapper(EUSCI_B0_BASE, ATTACK_CC);
 			break;
 		case DECAY_CC:
 
@@ -110,6 +119,14 @@ void handleCC(uint8_t cc, uint8_t value){
 
 			break;
 	}
+}
+
+uint32_t float_to_fixedpoint(float64_t float_coeff, uint8_t bits){
+  return((uint32_t)(round(float_coeff * 2**bits)))
+}
+
+float64_t calcCoef(rate, targetRatio){
+	return (exp(-log((1.0 + targetRatio) / targetRatio) / rate))
 }
 
 uint8_t checkifbyteis(uint8_t byte, uint8_t check){

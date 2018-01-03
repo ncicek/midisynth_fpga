@@ -62,7 +62,7 @@ module voice_controller(
 	always @(posedge i_clk) begin
 		if (i_reset) begin
 			pipeline_state <= 2'b0;
-			wave_select <= 4'd1;
+			wave_select <= 4'd0;
 		end
 		else begin
 			//counts: 0,1,2,0,1,2
